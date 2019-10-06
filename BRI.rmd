@@ -1,0 +1,295 @@
+---
+title: "BRI_Project"
+author: "Cian Stryker"
+date: "10/6/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(readxl)
+library(reshape2)
+library(plyr)
+library(countrycode)
+library(janitor)
+library(png)
+library(reprex)
+library(ggrepel)
+library(gganimate)
+library(tidyverse)
+```
+
+```{r}
+Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
+  clean_names()
+
+Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
+```
+
+```{r, include=FALSE}
+PR <- read_excel("raw-data/PR.xlsx")
+
+Pr_1 <- melt(PR, measure.vars = 2:15) 
+
+colnames(Pr_1)[colnames(Pr_1) == 'variable'] <- 'year'
+colnames(Pr_1)[colnames(Pr_1) == 'value'] <- 'PR'
+colnames(Pr_1)[colnames(Pr_1) == 'Country'] <- 'country'
+
+Pr_1 %>%  
+    mutate(PR = as.numeric(PR))
+
+Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
+
+```
+
+```{r}
+GDP_An <- read_excel("raw-data/GDP.xls", skip = 2) 
+ 
+GDP2 <- melt(GDP_An, measure.vars = 2:15) %>%
+  clean_names()
+
+colnames(GDP2)[colnames(GDP2) == 'variable'] <- 'year'
+colnames(GDP2)[colnames(GDP2) == 'value'] <- 'GDP_Increase'
+colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
+
+GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
+
+GDP_Final <- na.omit(GDP2)
+```
+
+```{r}
+China_simple <- Chinese_FDI %>%
+  select("year", "quantity_in_millions")
+
+China_simple_1 <- aggregate(quantity_in_millions ~ year, data = China_simple, FUN = sum)
+
+options(scipen=0)
+
+ggplot(China_simple_1, aes(x = year, y = quantity_in_millions, fill = year)) +
+  guides(fill = FALSE) +
+  geom_col() +
+  labs(
+    title = "Chinese Direct Foreign Investment over Time",
+    x = "FDI in Millions", 
+    y = "Year"
+  )
+  
+```
+
+```{r}
+China <- Chinese_FDI %>%
+  select("year", `quantity_in_millions`, "country", "region") 
+  
+China_1 <- aggregate(quantity_in_millions ~ country + year + region, data = China, FUN = sum)
+
+# I'd like to make this into a graph that you can just manually choose the year. 
+ggplot(China_1, aes(x = region, y = quantity_in_millions, fill = region)) + 
+  geom_col() +
+  labs(x=NULL, y=NULL, fill=NULL, title="{closest_state}") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
+  transition_states(year, transition_length = 4, state_length = 4) +
+  enter_fade() + 
+  guides(fill = FALSE) +
+  ease_aes('sine-in-out')
+
+```
+
+```{r}
+China_1x <- China_1 %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum = cumsum(quantity_in_millions))
+
+ggplot(China_1x, aes(x = region, y = y_cum, fill = region)) +
+  geom_col()+
+  labs(x=NULL, y=NULL, fill=NULL, title="{closest_state}") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
+  transition_states(year, transition_length = 2, state_length = 1) +
+  enter_fade() + 
+  guides(fill = FALSE) +
+  ease_aes('sine-in-out') 
+```
+
+```{r}
+China_sector <- Chinese_FDI %>%
+    select("country", "region", "year", "sector", "quantity_in_millions") %>%
+    filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
+    filter(region %in% c("Arab Middle East and North Africa", "South America", "Europe", "North America", "Sub-Saharan Africa", "West Asia")) 
+  
+China_sector1 <- aggregate(quantity_in_millions ~ country + year + region + sector, data = China_sector, FUN = sum)
+
+China_sector2 <- China_sector1 %>%
+  complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country, sector) %>%
+  mutate(y_cum2 = cumsum(quantity_in_millions))
+
+China_sector3 <- China_sector2 %>%
+    filter(year == 2019)
+
+#Consider Removing
+
+ggplot(China_sector3, aes(x = sector, y = y_cum2, fill = region)) +
+  geom_col() +
+  labs(x = "BRI Sectors", y = "Investment by Sector", fill=NULL, title="Commulative BRI Investment by Sector: 2019") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
+  guides(fill = FALSE) +
+  facet_wrap(~region)
+
+China_sector10 <- aggregate(y_cum2 ~ country + year + region, data = China_sector3, FUN = sum)
+
+```
+
+```{r}
+
+China_sector10 <- aggregate(y_cum2 ~ country + year + region, data = China_sector3, FUN = sum)
+
+ggplot(China_sector10, aes(x = reorder(region, -y_cum2), y = y_cum2, fill = region)) +
+  geom_col() +
+  labs(x = " ", y = "BRI Investment", fill=NULL, title="Commulative BRI Investment 2019") +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1, size = 8)) +
+  expand_limits(y = 4e+05) +
+  guides(fill = FALSE) 
+
+```
+
+
+```{r}
+China_sector4 <- Chinese_FDI %>%
+    select("country", "region", "year", "sector", "quantity_in_millions") %>%
+    filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
+    filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia"))
+
+China_sector4x <- aggregate(quantity_in_millions ~ country + year + region + sector, data = China_sector4, FUN = sum)
+
+China_sector4y <- China_sector4x %>%
+  complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country, sector) %>%
+  mutate(y_cum3 = cumsum(quantity_in_millions))
+
+ggplot(China_sector4y, aes(x = sector, y = y_cum3, fill = region)) +
+  geom_col()+
+  labs(x=NULL, y=NULL, fill=NULL, title="Chinese BRI Investment per Year: {closest_state}") +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 12)) +
+  transition_states(year, transition_length = 2, state_length = 1) +
+  enter_fade() + 
+  guides(fill = FALSE) +
+  ease_aes('sine-in-out')+ 
+  facet_wrap(~region)
+
+```
+
+```{r}
+
+China2 <- Chinese_FDI %>% 
+    select("year", `quantity_in_millions`, "country", "region") %>%
+    filter(region %in% c("West Asia", 
+                         "South America",
+                         "Arab Middle East and North Africa",
+                         "Sub-Saharan Africa"
+                          ))
+
+China2_x <- aggregate(quantity_in_millions ~ country + year + region, data = China2, FUN = sum)
+
+```
+
+```{r}
+
+trial <- China2_x %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum = cumsum(quantity_in_millions))
+
+ggplot(trial, aes(x = country, y = y_cum, size = y_cum, color = region)) +
+  geom_point()+
+  labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="Year: {closest_state}") +
+  transition_states(year, transition_length = 2, state_length = 1) +
+  enter_fade() + 
+  ease_aes('sine-in-out') + 
+  theme_bw() +
+  guides(size = FALSE, color = FALSE) +
+  theme(axis.text.x=element_blank()) +
+  facet_wrap(~region)
+```
+
+```{r}
+
+trial2 <- trial %>%
+  filter(year == 2019) %>%
+  filter(y_cum >= 20000)
+
+ggplot(trial2, aes(x = country, y = y_cum, color = region)) +
+  geom_point()+
+  geom_label_repel(aes(label = country),
+                  box.padding   = 0.35, 
+                  point.padding = 0.5,
+                  label.size = 0,
+                  segment.color = 'grey50') +
+  labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="Top BRI Investment Countries") +
+  theme_bw() +
+  expand_limits(y = 80000) +
+  guides(color= FALSE) +
+  theme(axis.text.x=element_blank()) +
+  facet_wrap(~region)
+
+```
+```{r}
+test <- Chinese_FDI %>%
+  select("country", "quantity_in_millions", "year","sector", "region") %>%
+  filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia")) %>%
+  filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) 
+
+test2 <- aggregate(quantity_in_millions ~ country + year + region, data = test, FUN = sum)
+
+test3 <- test2 %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum4 = cumsum(quantity_in_millions))
+
+test4 <- merge(test3, GDP_Final, by = c("year", "country")) 
+
+ggplot(test4, aes(x = y_cum4, size = y_cum4, color = region, y = GDP_Increase)) +
+  geom_point() +
+  labs(x=NULL, y=NULL, fill=NULL, title="Year {closest_state}") +
+  transition_states(year, transition_length = 4, state_length = 4) +
+  enter_fade() +
+  guides(size = FALSE, color = FALSE) +
+  ease_aes('sine-in-out')+
+  facet_wrap(~region)
+```
+
+```{r}
+x <- Chinese_FDI %>%
+  select("year", "quantity_in_millions","region", "country") 
+
+x2 <- x %>%
+    filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia"))
+
+x3 <- aggregate(quantity_in_millions ~ country + year + region, data = x2, FUN = sum) 
+
+t <- x3 %>%
+  filter(country %in% c("Algeria", "Egypt", "Iraq", "Saudi Arabia", "United Arab Emirates", "Brazil", "Argentina", "Peru", "Angola", "Ethiopia", "Nigeria", "Bangladesh", "India", "Pakistan", "Russia", "Iran", "Kazakhstan"))
+
+x4 <-x3 %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum5 = cumsum(quantity_in_millions))
+
+x5 <- merge(x4, Pr_1, by = c("year", "country")) %>%
+  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
+  group_by(PR)
+
+ggplot(x5, aes(x = PR, y = y_cum5, fill = PR)) + 
+  geom_col() +
+  labs(x="Politcal Rights", y="Cummulative FDI", fill=NULL, title="Year {closest_state}") +
+  transition_states(year, transition_length = 4, state_length = 4) +
+  enter_fade() +
+  guides(size = FALSE) +
+  ease_aes('sine-in-out')
+``` 
