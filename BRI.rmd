@@ -13,6 +13,7 @@ library(reshape2)
 library(plyr)
 library(countrycode)
 library(janitor)
+library(maps)
 library(png)
 library(reprex)
 library(ggrepel)
@@ -20,7 +21,7 @@ library(gganimate)
 library(tidyverse)
 ```
 
-```{r}
+```{r, message=FALSE}
 Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
   clean_names()
 
@@ -43,7 +44,7 @@ Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
 
 ```
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 GDP_An <- read_excel("raw-data/GDP.xls", skip = 2) 
  
 GDP2 <- melt(GDP_An, measure.vars = 2:15) %>%
@@ -56,6 +57,15 @@ colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
 GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
 
 GDP_Final <- na.omit(GDP2)
+```
+
+```{r, warning=FALSE}
+
+map.world <- map_data('world')
+colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
+map.world$country <- countrycode(map.world$country, "country.name", "country.name")
+
+```
 ```
 
 ```{r}
@@ -197,13 +207,51 @@ China2_x <- aggregate(quantity_in_millions ~ country + year + region, data = Chi
 ```
 
 ```{r}
-
 trial <- China2_x %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country) %>%
-  mutate(y_cum = cumsum(quantity_in_millions))
+  mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  filter(year == 2019)
+  
+  workss2 <- left_join(map.world, trial, by = c("country"))
+``` 
 
+```{r}
+ggplot(workss2, aes( x = long, y = lat, group = group )) +
+  geom_polygon(aes(fill = y_cum)) +
+  guides(fill = guide_legend(reverse = T,)) +
+  scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
+                       ,values = scales::rescale(c(0,5000, 20000, 30000, 40000, 60000))
+                       ,breaks = c(0,5000, 20000, 30000, 40000, 60000)
+                       ) +
+  labs(fill = 'Commulative FDI'
+       ,title = 'Commulative Chinese Foreign Direct Investment by Country'
+       ,subtitle = '2019'
+       ,x = NULL
+       ,y = NULL) +
+  theme(text = element_text(family = 'Gill Sans', color = '#333333')
+        ,plot.title = element_text(size = 18)
+        ,plot.subtitle = element_text(size = 14)
+        ,axis.ticks = element_blank()
+        ,axis.text = element_blank()
+        ,panel.grid = element_blank()
+        ,plot.background = element_rect(fill = '#CCCCCC')
+        ,legend.position = c(.18,.36)
+        ,legend.background = element_rect(fill = '#CCCCCC')
+        ,legend.key = element_blank()
+        ) +
+  annotate(geom = 'text'
+           ,label = 'Source: Us Chamber of Commerce'
+           ,x = 18, y = -55
+           ,size = 3
+           ,family = 'Gill Sans'
+           ,color = '#333333'
+           ,hjust = 'left'
+           )
+```
+
+```{r}
 ggplot(trial, aes(x = country, y = y_cum, size = y_cum, color = region)) +
   geom_point()+
   labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="Year: {closest_state}") +
