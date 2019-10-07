@@ -58,6 +58,9 @@ colnames(GDP2)[colnames(GDP2) == 'value'] <- 'GDP_Increase'
 colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
 
 GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
+GDP2$country2 = GDP2$country
+
+GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
 
 GDP_Final <- na.omit(GDP2)
 ```
@@ -178,7 +181,7 @@ ggplot(China_1x, aes(x = region, y = y_cum, fill = region)) +
   ease_aes('sine-in-out') 
 ```
 
-```{r, Cummalitve 2019 Graph, by Sector }
+```{r, Cummalitve 2019 Graph by Sector }
 China_sector <- Chinese_FDI %>%
     select("country", "region", "year", "sector", "quantity_in_millions") %>%
     filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
@@ -349,22 +352,23 @@ ggplot(trial2, aes(x = country, y = y_cum, color = region)) +
 
 ```{r, BRI and GDP Scatter Plot }
 test <- Chinese_FDI %>%
-  select("country", "quantity_in_millions", "year","sector", "region") %>%
+  select("country2", "quantity_in_millions", "year","sector", "region") %>%
   filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia")) %>%
   filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) 
 
-test2 <- aggregate(quantity_in_millions ~ country + year + region, data = test, FUN = sum)
+test2 <- aggregate(quantity_in_millions ~ country2 + year + region, data = test, FUN = sum)
 
 test3 <- test2 %>%
-  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  complete(year, nesting(country2, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
-  group_by(region, country) %>%
+  group_by(region, country2) %>%
   mutate(y_cum4 = cumsum(quantity_in_millions))
 
-test4 <- merge(test3, GDP_Final, by = c("year", "country")) 
+test4 <- merge(test3, GDP_Final, by = c("year", "country2")) 
 
 ggplot(test4, aes(x = y_cum4, size = y_cum4, color = region, y = GDP_Increase)) +
   geom_point() +
+  geom_text(data = subset(test4, y_cum4 > 30000 | GDP_Increase > 1e+12), aes(label = country2, hjust = 0, vjust = -1.3)) +
   labs(x=NULL, y=NULL, fill=NULL, title="Year {closest_state}") +
   transition_states(year, transition_length = 4, state_length = 4) +
   enter_fade() +
