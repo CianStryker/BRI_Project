@@ -171,14 +171,20 @@ China_1x <- China_1 %>%
   group_by(region, country) %>%
   mutate(y_cum = cumsum(quantity_in_millions))
 
-ggplot(China_1x, aes(x = region, y = y_cum, fill = region)) +
-  geom_col()+
-  labs(x=NULL, y=NULL, fill=NULL, title="{closest_state}") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
-  transition_states(year, transition_length = 2, state_length = 1) +
-  enter_fade() + 
-  guides(fill = FALSE) +
-  ease_aes('sine-in-out') 
+China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum)
+
+ggplot(China_1y, aes(x = year, y = y_cum, group = region)) +
+  geom_line(aes(linetype= "solid", color= region)) +
+   geom_point(aes(color=region)) +
+  labs(
+    color = "Region",
+    title = "Commulative Chinese FDI over Time",
+    subtitle = "Per Region",
+    x = "Year",
+    y = "Commulative FDI in Millions"
+  ) +
+  scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
+  guides(linetype = FALSE)
 ```
 
 ```{r, Cummalitve 2019 Graph by Sector }
