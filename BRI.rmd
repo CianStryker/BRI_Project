@@ -448,7 +448,7 @@ ggplot(Map1x, aes( x = long, y = lat, group = group )) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
   labs(fill = 'Political Rights'
-       ,title = 'Political Rights within the BRI Regions before Chinese Investment'
+       ,title = 'Political Rights within the BRI Regions'
        ,subtitle = '2005'
        ,x = NULL
        ,y = NULL) +
@@ -480,7 +480,7 @@ ggplot(Map2x, aes( x = long, y = lat, group = group )) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
   labs(fill = 'Political Rights'
-       ,title = 'Political Rights within the BRI Regions after Chinese Investment'
+       ,title = 'Political Rights within the BRI Regions'
        ,subtitle = '2018'
        ,x = NULL
        ,y = NULL) +
