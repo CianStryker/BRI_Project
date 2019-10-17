@@ -13,6 +13,7 @@ library(reshape2)
 library(plyr)
 library(countrycode)
 library(janitor)
+library(gvlma)
 library(maps)
 library(png)
 library(cowplot)
@@ -41,11 +42,12 @@ colnames(Pr_1)[colnames(Pr_1) == 'variable'] <- 'year'
 colnames(Pr_1)[colnames(Pr_1) == 'value'] <- 'PR'
 colnames(Pr_1)[colnames(Pr_1) == 'Country'] <- 'country'
 
-Pr_1 %>%  
-    mutate(PR = as.numeric(PR))
 
 Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
 
+
+Pr_2 <- Pr_1 %>%  
+    mutate(PR = as.numeric(PR))
 ```
 
 ```{r, GDP loading, message=FALSE, warning=FALSE}
@@ -65,6 +67,26 @@ GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
 
 GDP_Final <- na.omit(GDP2)
 ```
+
+```{r, warning=FALSE}
+Debt <- read_excel("raw-data/imf-debt.xls")
+Debt2 <- melt(Debt, measure.vars = 2:16) %>%
+  clean_names() 
+
+Debt2$value <- as.numeric(as.character(Debt2$value))
+
+colnames(Debt2)[colnames(Debt2) == 'variable'] <- 'year'
+colnames(Debt2)[colnames(Debt2) == 'value'] <- 'debt'
+colnames(Debt2)[colnames(Debt2) == 'general_government_gross_debt_percent_of_gdp'] <- 'country'
+
+Debt2$country <- countrycode(Debt2$country, "country.name", "country.name") 
+Debt2$country2 = Debt2$country
+
+Debt2$country2 <- countrycode(Debt2$country2, "country.name", "iso2c")
+
+
+```
+
 
 ```{r, Mapwold loading, warning=FALSE}
 
@@ -192,7 +214,7 @@ ggplot(China_1y, aes(x = year, y = y_cum, group = region)) +
 China_sector <- Chinese_FDI %>%
     select("country", "region", "year", "sector", "quantity_in_millions") %>%
     filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
-    filter(region %in% c("Arab Middle East and North Africa", "South America", "Europe", "North America", "Sub-Saharan Africa", "West Asia")) 
+    filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Europe", "North America", "Sub-Saharan Africa", "US", "West Asia")) 
   
 China_sector1 <- aggregate(quantity_in_millions ~ country + year + region + sector, data = China_sector, FUN = sum)
 
@@ -233,7 +255,7 @@ ggplot(China_sector10, aes(x = reorder(region, -y_cum2), y = y_cum2, fill = regi
 China_sector4 <- Chinese_FDI %>%
     select("country", "region", "year", "sector", "quantity_in_millions") %>%
     filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
-    filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia"))
+    filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Sub-Saharan Africa", "West Asia"))
 
 China_sector4x <- aggregate(quantity_in_millions ~ country + year + region + sector, data = China_sector4, FUN = sum)
 
@@ -262,7 +284,8 @@ China2 <- Chinese_FDI %>%
     filter(region %in% c("West Asia", 
                          "South America",
                          "Arab Middle East and North Africa",
-                         "Sub-Saharan Africa"
+                         "Sub-Saharan Africa",
+                         "East Asia"
                           ))
 
 China2_x <- aggregate(quantity_in_millions ~ country + year + region + country2, data = China2, FUN = sum)
@@ -357,10 +380,38 @@ ggplot(trial2, aes(x = country, y = y_cum, color = region)) +
 
 ```
 
+
+```{r}
+test99 <- Chinese_FDI %>%
+  select("country2", "quantity_in_millions", "year") 
+
+test29 <- aggregate(quantity_in_millions ~ country2 + year, data = test99, FUN = sum)
+
+test39 <- test29 %>%
+  complete(year, nesting(country2), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(country2) %>%
+  mutate(y_cum4 = cumsum(quantity_in_millions))
+
+test49 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
+  filter(year == 2018) %>%
+  filter(GDP_Increase <= 1.0e+13 )
+
+ggplot(test49, aes(x = y_cum4,  y = GDP_Increase)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = FALSE) 
+
+linearMod <- lm(y_cum4 ~ GDP_Increase, data=test49)  
+print(linearMod)
+summary(linearMod)
+
+gvlma::gvlma(linearMod)
+```
+
 ```{r, BRI and GDP Scatter Plot }
 test <- Chinese_FDI %>%
   select("country2", "quantity_in_millions", "year","sector", "region") %>%
-  filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia")) %>%
+  filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Sub-Saharan Africa", "West Asia")) %>%
   filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) 
 
 test2 <- aggregate(quantity_in_millions ~ country2 + year + region, data = test, FUN = sum)
@@ -390,10 +441,27 @@ test5 <- test4 %>%
 ggplot(test5, aes(x = y_cum4, size = y_cum4, color = region, y = GDP_Increase)) +
    geom_point() +
    geom_smooth(method = "lm", se = FALSE) + 
-  geom_text(data = subset(test5, GDP_Increase > 1e+12 | y_cum4 > 25000), aes(label = country2, hjust = 1.3, vjust = -1)) +
+  geom_text(data = subset(test5, y_cum4 > 20000), aes(label = country2, hjust = 1.3, vjust = 1)) +
   labs(x=NULL, y=NULL, fill=NULL, title= "Commulative FDI with GDP in 2019") +
   guides(size = FALSE, color = FALSE) +
   facet_wrap(~region)
+```
+```{r}
+test_5 <- test4 %>%
+  filter(year == 2018) %>%
+  filter(region == "East Asia") %>%
+  filter(GDP_Increase <= 1.4e+12)
+
+ggplot(test_5, aes(x = y_cum4, y = GDP_Increase)) +
+   geom_point() +
+   geom_smooth(method = "lm", se = FALSE) 
+
+
+linearMod2 <- lm(y_cum4 ~ GDP_Increase, data=test_5)  
+print(linearMod)
+summary(linearMod2)
+
+gvlma::gvlma(linearMod2)
 ```
 
 ```{r, BRI and Political Rights Bar Graph}
@@ -401,12 +469,10 @@ x <- Chinese_FDI %>%
   select("year", "quantity_in_millions","region", "country") 
 
 x2 <- x %>%
-    filter(region %in% c("Arab Middle East and North Africa", "South America", "Sub-Saharan Africa", "West Asia"))
+    filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Sub-Saharan Africa", "West Asia"))
 
 x3 <- aggregate(quantity_in_millions ~ country + year + region, data = x2, FUN = sum) 
 
-t <- x3 %>%
-  filter(country %in% c("Algeria", "Egypt", "Iraq", "Saudi Arabia", "United Arab Emirates", "Brazil", "Argentina", "Peru", "Angola", "Ethiopia", "Nigeria", "Bangladesh", "India", "Pakistan", "Russia", "Iran", "Kazakhstan"))
 
 x4 <-x3 %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
@@ -428,6 +494,7 @@ ggplot(x5, aes(x = PR, y = y_cum5, fill = PR)) +
 ``` 
 
 ```{r, PR Map}
+
 Map1 <- x5 %>%
   filter(year == 2005)
 
@@ -438,7 +505,18 @@ Map2 <- x5 %>%
 
 Map2x <- left_join(map.world, Map2, by = c("country"))
 
+```
 
+```{r}
+x6 <- merge(x4, Pr_2, by = c("year", "country")) %>%
+  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
+  group_by(PR)
+
+linearMod3 <- lm(y_cum5 ~ PR, data=x6)  
+print(linearMod3)
+summary(linearMod3)
+
+gvlma::gvlma(linearMod3)
 ```
 
 ```{r, warning=FALSE}
@@ -504,6 +582,3 @@ ggplot(Map2x, aes( x = long, y = lat, group = group )) +
            ,hjust = 'left'
            )
 ```
-
-
-
