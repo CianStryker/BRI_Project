@@ -68,26 +68,6 @@ GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
 GDP_Final <- na.omit(GDP2)
 ```
 
-```{r, warning=FALSE}
-Debt <- read_excel("raw-data/imf-debt.xls")
-Debt2 <- melt(Debt, measure.vars = 2:16) %>%
-  clean_names() 
-
-Debt2$value <- as.numeric(as.character(Debt2$value))
-
-colnames(Debt2)[colnames(Debt2) == 'variable'] <- 'year'
-colnames(Debt2)[colnames(Debt2) == 'value'] <- 'debt'
-colnames(Debt2)[colnames(Debt2) == 'general_government_gross_debt_percent_of_gdp'] <- 'country'
-
-Debt2$country <- countrycode(Debt2$country, "country.name", "country.name") 
-Debt2$country2 = Debt2$country
-
-Debt2$country2 <- countrycode(Debt2$country2, "country.name", "iso2c")
-
-
-```
-
-
 ```{r, Mapwold loading, warning=FALSE}
 
 map.world <- map_data('world')

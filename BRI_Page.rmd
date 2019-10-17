@@ -6,7 +6,64 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+
+library(readxl)
+library(reshape2)
+library(plyr)
+library(countrycode)
+library(janitor)
+library(gvlma)
+library(maps)
+library(png)
+library(cowplot)
+library(reprex)
+library(ggrepel)
+library(gganimate)
+library(tidyverse)
+```
+
+```{r, Chinese FDI Loading, message=FALSE}
+Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
+  clean_names()
+
+Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
+Chinese_FDI$country2 = Chinese_FDI$country
+
+Chinese_FDI$country2 <- countrycode(Chinese_FDI$country2, "country.name", "iso2c")
+```
+
+```{r, Mapwold loading, warning=FALSE}
+
+map.world <- map_data('world')
+colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
+map.world$country <- countrycode(map.world$country, "country.name", "country.name")
+
+```
+
+```{r, First setup chunk, warning=FALSE}
+
+#Here's my first thing I want people to see. I want to find the cumulative amount of Chinese FDI per year. So I grab what I need first in terms of variables. 
+
+China_test <- Chinese_FDI %>%
+  select("year", `quantity_in_millions`, "country")
+
+#Not its an aggregate function to find the total amount of FDI per year and country.
+  
+China_test1 <- aggregate(quantity_in_millions ~ country + year, data = China_test, FUN = sum)
+
+#Not I calculate the cumulative amount per year. I've used this function before so I'm comfortable with it. I do specify that I just want the cumulative FDI in 2019 to represent total investment, per country, from 2005 until now. 
+
+China_test2 <- China_test1 %>%
+  complete(year, nesting(country), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(country) %>%
+  mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
+  filter(year == 2019)
+
+#Here I'm just merging my map.world data with my FDI data. Left join does exactly what I want so I use it. Maybe I could've used merge, but here I thought left_join was more appropriate. I join the two on the "country" column which is now uniform. 
+
+workss <- left_join(map.world, China_test2, by = c("country"))
 ```
 
 ```{r, Commulative BRI graph by Target Region}
@@ -47,8 +104,8 @@ China2 <- Chinese_FDI %>%
                           ))
 
 China2_x <- aggregate(quantity_in_millions ~ country + year + region + country2, data = China2, FUN = sum)
-
 ```
+
 
 ```{r, Map 2 combination}
 trial <- China2_x %>%
@@ -69,8 +126,9 @@ ggplot(workss2, aes( x = long, y = lat, group = group )) +
                        ,values = scales::rescale(c(0,10000, 20000, 30000, 40000, 60000))
                        ,breaks = c(0,10000, 20000, 30000, 40000, 60000)
                        ) +
-  labs(fill = 'Commulative FDI'
-       ,title = 'Commulative Chinese Foreign Direct Investment by Country'
+  labs(fill = 'Commulative FDI
+in Millions'
+       ,title = 'Commulative BRI Chinese Foreign Direct Investment by Country'
        ,subtitle = '2019'
        ,x = NULL
        ,y = NULL) +

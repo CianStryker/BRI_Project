@@ -84,7 +84,8 @@ ggplot(workss, aes( x = long, y = lat, group = group )) +
                        ,values = scales::rescale(c(0,20000, 30000, 40000, 100000, 180000))
                        ,breaks = c(0,20000, 30000, 40000, 100000, 180000)
                        ) +
-  labs(fill = 'Commulative FDI'
+  labs(fill = 'Commulative FDI
+in Millions'
        ,title = 'Commulative Chinese Foreign Direct Investment by Country'
        ,subtitle = '2019'
        ,x = NULL
