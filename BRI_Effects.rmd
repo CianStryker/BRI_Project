@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = FALSE)
 library(readxl)
 library(reshape2)
 library(plyr)
+library(jtools)
+library(kableExtra)
 library(countrycode)
 library(janitor)
 library(gvlma)
@@ -71,6 +73,8 @@ test39 <- test29 %>%
   group_by(country2, region) %>%
   mutate(y_cum4 = cumsum(quantity_in_millions))
 
+test48 <- merge(test39, GDP_Final, by = c("year", "country2"))
+
 test49 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   filter(year == 2018) %>%
   filter(GDP_Increase <= 1.0e+13 )
@@ -85,11 +89,12 @@ ggplot(test49, aes(x = y_cum4,  y = GDP_Increase, color  = "red")) +
    geom_smooth(method = "lm", se = FALSE) 
 ```
 
-```{r}
-linearMod <- lm(y_cum4 ~ GDP_Increase, data=test49)  
-print(linearMod)
-summary(linearMod)
+```{r render = 'normal_print'}
+linearMod <- lm(y_cum4 ~ GDP_Increase, data=test48)  
+summ(linearMod)
+```
 
+```{r}
 gvlma::gvlma(linearMod)
 ```
 
@@ -139,7 +144,7 @@ ggplot(test5, aes(x = y_cum4, size = y_cum4, color = region, y = GDP_Increase)) 
   facet_wrap(~region)
 ```
 
-```{r}
+```{r Test Chunk per Region}
 test_5 <- test4 %>%
   filter(year == 2018) %>%
   filter(region == "East Asia") %>%

@@ -12,6 +12,8 @@ library(reshape2)
 library(plyr)
 library(countrycode)
 library(janitor)
+library(jtools)
+library(kableExtra)
 library(gvlma)
 library(maps)
 library(png)
@@ -102,17 +104,20 @@ Map2x <- left_join(map.world, Map2, by = c("country"))
 
 ```
 
-```{r}
+```{r render = 'normal_print'}
 x6 <- merge(x4, Pr_2, by = c("year", "country")) %>%
   filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
   group_by(PR)
 
 linearMod3 <- lm(y_cum5 ~ PR, data=x6)  
 print(linearMod3)
-summary(linearMod3)
+summ(linearMod3)
+```
 
+```{r}
 gvlma::gvlma(linearMod3)
 ```
+
 ```{r}
 ggplot(x6, aes(x = y_cum5,  y = PR, color  = "red")) +
    geom_point() +
