@@ -162,7 +162,7 @@ trial2 <- China2_x %>%
   mutate(y_cum = cumsum(quantity_in_millions)) 
 
 ggplot(trial2, aes(x = country2, y = y_cum, size = y_cum, color = region)) +
-  geom_point()+
+  geom_jitter()+
   geom_text(data = subset(trial2, y_cum > 20000), aes(label = country2, hjust = 0, vjust = -1.3)) +
   labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="Year: {closest_state}") +
   transition_states(year, transition_length = 2, state_length = 1) +

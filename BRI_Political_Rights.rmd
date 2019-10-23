@@ -47,8 +47,7 @@ colnames(Pr_1)[colnames(Pr_1) == 'Country'] <- 'country'
 Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
 
 
-Pr_2 <- Pr_1 %>%  
-    mutate(PR = as.numeric(PR))
+Pr_2 <- Pr_1 
 ```
 
 ```{r, Mapwold loading, warning=FALSE}
@@ -57,6 +56,24 @@ map.world <- map_data('world')
 colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
 map.world$country <- countrycode(map.world$country, "country.name", "country.name")
 
+```
+
+```{r, GDP loading, message=FALSE, warning=FALSE}
+GDP_An <- read_excel("raw-data/GDP.xls", skip = 2) 
+ 
+GDP2 <- melt(GDP_An, measure.vars = 2:15) %>%
+  clean_names()
+
+colnames(GDP2)[colnames(GDP2) == 'variable'] <- 'year'
+colnames(GDP2)[colnames(GDP2) == 'value'] <- 'GDP_Increase'
+colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
+
+GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
+GDP2$country2 = GDP2$country
+
+GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
+
+GDP_Final <- na.omit(GDP2)
 ```
 
 ```{r, BRI and Political Rights Bar Graph}
@@ -105,29 +122,63 @@ Map2x <- left_join(map.world, Map2, by = c("country"))
 ```
 
 ```{r render = 'normal_print'}
-x6 <- merge(x4, Pr_2, by = c("year", "country")) %>%
-  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
-  group_by(PR)
+x6 <- merge(x4, Pr_1, by = c("year", "country")) %>%
+  group_by(PR) %>%
+  mutate(log_ycum5 = log10(y_cum5))
 
+x7 <- x6 %>%
+  filter(year == 2008)
+
+x8 <- x6 %>%
+  filter(year == 2018)
+```
+
+```{r}
+plot_1 <- ggplot(x7, aes(x = PR,  y = log_ycum5, fill = PR)) +
+   geom_boxplot() +
+  labs(x= "Political Rights",
+       y= "BRI Chinese FDI (in Millions)",
+       fill=NULL,
+       title= "PR in 2008") +
+  guides(fill = FALSE) 
+```
+
+```{r}
+plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
+   geom_boxplot() +
+  labs(x= "Political Rights",
+       y= NULL,
+       fill=NULL,
+       title= "PR in 2019") +
+  guides(fill = FALSE)
+```
+
+```{r}
+plot_grid(plot_1, plot_2)
+```
+
+```{r}
+x9 <- merge(x6, GDP_Final) %>%
+  mutate(log_y = log10(y_cum5), 
+         log_GDP = log10(GDP_Increase)) %>%
+  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7"))
+
+ggplot(x9, aes(x = log_y,  y = log_GDP, color = PR)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x= "BRI Investment",
+       y= "GDP",
+       fill=NULL,
+       title= "PR in 2019") +
+  facet_wrap(~PR)
+```
+
+```{r}
 linearMod3 <- lm(y_cum5 ~ PR, data=x6)  
 print(linearMod3)
 summ(linearMod3)
 ```
 
-```{r}
-gvlma::gvlma(linearMod3)
-```
-
-```{r}
-ggplot(x6, aes(x = y_cum5,  y = PR, color  = "red")) +
-   geom_point() +
-  labs(x= "BRI Chinese FDI (in Millions)",
-       y= "Political Rights",
-       fill=NULL,
-       title= "Relationship between PR and FDI") +
-  guides(color = FALSE) +
-   geom_smooth(method = "lm", se = FALSE) 
-```
 
 
 ```{r, warning=FALSE}
