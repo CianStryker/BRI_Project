@@ -66,6 +66,7 @@ China_test2 <- China_test1 %>%
   arrange(year) %>%
   group_by(country) %>%
   mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
+  mutate(y_cum4x = y_cum4 * 1000000) %>%
   filter(year == 2019)
 
 #Here I'm just merging my map.world data with my FDI data. Left join does exactly what I want so I use it. Maybe I could've used merge, but here I thought left_join was more appropriate. I join the two on the "country" column which is now uniform. 
@@ -78,14 +79,15 @@ workss <- left_join(map.world, China_test2, by = c("country"))
 #Here is my map code chunk! This was pretty difficult, but essentially its ggplot with a ton of details thrown in. I had to go to Stackoverflow to get a template and then tweak it to make it my own. Using the combined data from before I can fill in the data per country across the globe. Super cool. I tweak the values for the legend and colors. I also tweak the colors to make it more logical and recognizable for the reader. Hmm... I also add in some aesthetic choices such as labels, removing tick marks, and adding in a source label. Feel free to critique but I really like this and I want to use it alot for different stages of my project.
 
 ggplot(workss, aes( x = long, y = lat, group = group )) +
-  geom_polygon(aes(fill = y_cum4)) +
+  geom_polygon(aes(fill = y_cum4x)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
-                       ,values = scales::rescale(c(0,20000, 30000, 40000, 100000, 180000))
-                       ,breaks = c(0,20000, 30000, 40000, 100000, 180000)
+                       ,values = scales::rescale(c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11))
+                       ,breaks = c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11)
+              
                        ) +
   labs(fill = 'Commulative FDI
-in Millions'
+in USD'
        ,title = 'Commulative Chinese Foreign Direct Investment by Country'
        ,subtitle = '2019'
        ,x = NULL
@@ -103,8 +105,8 @@ in Millions'
         ) +
   annotate(geom = 'text'
            ,label = 'Source: The American Enterprise Institute and The Heritage Foundation'
-           ,x = 18, y = -55
-           ,size = 3
+           ,x = 14, y = -55
+           ,size = 2
            ,family = 'Gill Sans'
            ,color = '#333333'
            ,hjust = 'left'
@@ -127,17 +129,18 @@ China_simple <- Chinese_FDI %>%
 
 #Nothing new here. Another aggregate command by year now.
 
-China_simple_1 <- aggregate(quantity_in_millions ~ year, data = China_simple, FUN = sum)
+China_simple_1 <- aggregate(quantity_in_millions ~ year, data = China_simple, FUN = sum) %>%
+  mutate(FDI = quantity_in_millions * 1000000)
 
 #This is just a simple ggplot bar graph to show how much FDI has increased since 2005. Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was necessary to get too fancy with this beyond labels.
 
-ggplot(China_simple_1, aes(x = year, y = quantity_in_millions, fill = year)) +
+ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
   guides(fill = FALSE) +
   geom_col() +
   labs(
     title = "Chinese Direct Foreign Investment over Time",
-    x = "FDI in Millions", 
-    y = "Year"
+    x = "Years", 
+    y = "FDI in USD"
   )
   
 ```
@@ -169,11 +172,12 @@ China_1x <- China_1 %>%
 
 #Here I have to re-aggregate the data to make it work for my line chart. So I do that.
 
-China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum) 
+China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum) %>%
+  mutate(FDI = y_cum *1000000)
 
 #Finally this is just a simple line chart that shows how investment has changed overtime. I originally had an animated bar chart, but I think this is a much better representation. I add in some detail work like labels and reorder my x axis. Note: My data treats the US and North American separate. I actually like this because it really shows how much investment goes into the US, so I kept it separate as well.
 
-ggplot(China_1y, aes(x = year, y = y_cum, group = region)) +
+ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
   geom_line(aes(linetype= "dash", color= region)) +
   geom_point(aes(color=region)) +
   labs(
@@ -181,7 +185,7 @@ ggplot(China_1y, aes(x = year, y = y_cum, group = region)) +
     title = "Commulative Chinese FDI over Time",
     subtitle = "Per Region",
     x = "Year",
-    y = "Commulative FDI in Millions"
+    y = "Commulative FDI in USD"
   ) +
   scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
   guides(linetype = FALSE) 
@@ -201,14 +205,15 @@ China_2x <- China_1 %>%
   arrange(year) %>%
   group_by(region, country) %>%
   mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum * 1000000) %>%
   filter(year == 2019)
 
 #Then I just graph it. Minimal extra work was put into this. 
 
-ggplot(China_2x, aes(x = region, y = y_cum, fill = region)) +
+ggplot(China_2x, aes(x = region, y = FDI, fill = region)) +
   geom_col()+
   labs(x= NULL,
-       y="Commulative FDI in Millions", 
+       y="Commulative FDI in USD", 
        fill=NULL, 
        title="Commulative Investment, 2019") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +

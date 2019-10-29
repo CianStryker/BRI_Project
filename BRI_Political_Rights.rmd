@@ -90,7 +90,8 @@ x4 <-x3 %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country) %>%
-  mutate(y_cum5 = cumsum(quantity_in_millions))
+  mutate(y_cum5 = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum5 * 1000000)
 
 x5 <- merge(x4, Pr_1, by = c("year", "country")) %>%
   filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
@@ -98,7 +99,7 @@ x5 <- merge(x4, Pr_1, by = c("year", "country")) %>%
 ```
 
 ```{r}
-ggplot(x5, aes(x = PR, y = y_cum5, fill = PR)) + 
+ggplot(x5, aes(x = PR, y = FDI, fill = PR)) + 
   geom_col() +
   labs(x="Politcal Rights", y="Cummulative FDI", fill=NULL, title="Year {closest_state}") +
   transition_states(year, transition_length = 4, state_length = 4) +
@@ -124,23 +125,31 @@ Map2x <- left_join(map.world, Map2, by = c("country"))
 ```{r render = 'normal_print'}
 x6 <- merge(x4, Pr_1, by = c("year", "country")) %>%
   group_by(PR) %>%
-  mutate(log_ycum5 = log10(y_cum5))
+  mutate(log_ycum5 = log10(FDI))
 
 x7 <- x6 %>%
-  filter(year == 2008)
+  filter(year == 2008) %>%
+  filter(PR %in% c(1,2, 3, 4, 5, 6, 7)) %>%
+  filter(log_ycum5 >= 0)
 
 x8 <- x6 %>%
-  filter(year == 2018)
+  filter(year == 2018)%>%
+  filter(PR %in% c(1,2, 3, 4, 5, 6, 7))%>%
+  filter(log_ycum5 >= 0)
 ```
 
 ```{r}
 plot_1 <- ggplot(x7, aes(x = PR,  y = log_ycum5, fill = PR)) +
    geom_boxplot() +
-  labs(x= "Political Rights",
-       y= "BRI Chinese FDI (in Millions)",
+   expand_limits(y =11) +
+  scale_y_log10(breaks = c(8, 8.5, 9, 9.5, 10, 10.5, 11),
+                     labels = c(8, 8.5, 9, 9.5, 10, 10.5, 11)) +
+  guides(fill = FALSE) +
+labs(x= "Political Rights",
+       y="BRI Chinese FDI (in Billions USD)",
        fill=NULL,
-       title= "PR in 2008") +
-  guides(fill = FALSE) 
+       title= "Politcal Rights in 2008",
+     subtitle = "BRI Investment per Category")
 ```
 
 ```{r}
@@ -149,21 +158,27 @@ plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
   labs(x= "Political Rights",
        y= NULL,
        fill=NULL,
-       title= "PR in 2019") +
+       title= "Politcal Rights in 2019",
+       subtitle = " ") +
+  expand_limits(y =11) +
+  scale_y_log10(breaks = c(8, 8.5, 9, 9.5, 10, 10.5, 11),
+                     labels = c("8", "8.5", "9", "9.5", "10", "10.5", "11")) +
   guides(fill = FALSE)
 ```
 
 ```{r}
-plot_grid(plot_1, plot_2)
+plot_grid(plot_1, plot_2, labels = NULL)
 ```
 
 ```{r}
 x9 <- merge(x6, GDP_Final) %>%
   mutate(log_y = log10(y_cum5), 
-         log_GDP = log10(GDP_Increase)) %>%
+         log_GDP = log10(GDP_Increase)) 
+
+x10 <- x9 %>%
   filter(PR %in% c("1", "2", "3", "4", "5", "6", "7"))
 
-ggplot(x9, aes(x = log_y,  y = log_GDP, color = PR)) +
+ggplot(x10, aes(x = log_y,  y = log_GDP, color = PR)) +
   geom_jitter() +
   geom_smooth(method = "lm", se = FALSE) +
   labs(x= "BRI Investment",
@@ -174,7 +189,7 @@ ggplot(x9, aes(x = log_y,  y = log_GDP, color = PR)) +
 ```
 
 ```{r}
-linearMod3 <- lm(y_cum5 ~ PR, data=x6)  
+linearMod3 <- lm(y_cum5 ~ GDP_Increase + PR, data=x9)  
 print(linearMod3)
 summ(linearMod3)
 ```
