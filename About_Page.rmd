@@ -78,7 +78,7 @@ workss <- left_join(map.world, China_test2, by = c("country"))
 
 #Here is my map code chunk! This was pretty difficult, but essentially its ggplot with a ton of details thrown in. I had to go to Stackoverflow to get a template and then tweak it to make it my own. Using the combined data from before I can fill in the data per country across the globe. Super cool. I tweak the values for the legend and colors. I also tweak the colors to make it more logical and recognizable for the reader. Hmm... I also add in some aesthetic choices such as labels, removing tick marks, and adding in a source label. Feel free to critique but I really like this and I want to use it alot for different stages of my project.
 
-ggplot(workss, aes( x = long, y = lat, group = group )) +
+plot1 <- ggplot(workss, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = y_cum4x)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
@@ -134,7 +134,7 @@ China_simple_1 <- aggregate(quantity_in_millions ~ year, data = China_simple, FU
 
 #This is just a simple ggplot bar graph to show how much FDI has increased since 2005. Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was necessary to get too fancy with this beyond labels.
 
-ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
+plot2 <- ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
   guides(fill = FALSE) +
   geom_col() +
   labs(
@@ -177,7 +177,7 @@ China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum) %>%
 
 #Finally this is just a simple line chart that shows how investment has changed overtime. I originally had an animated bar chart, but I think this is a much better representation. I add in some detail work like labels and reorder my x axis. Note: My data treats the US and North American separate. I actually like this because it really shows how much investment goes into the US, so I kept it separate as well.
 
-ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
+plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
   geom_line(aes(linetype= "dash", color= region)) +
   geom_point(aes(color=region)) +
   labs(
@@ -210,7 +210,7 @@ China_2x <- China_1 %>%
 
 #Then I just graph it. Minimal extra work was put into this. 
 
-ggplot(China_2x, aes(x = region, y = FDI, fill = region)) +
+plot4 <- ggplot(China_2x, aes(x = region, y = FDI, fill = region)) +
   geom_col()+
   labs(x= NULL,
        y="Commulative FDI in USD", 
@@ -254,7 +254,7 @@ China_sector3 <- China_sector2 %>%
 
 #This is essentially a simple bar chart, but I've added in enough facet wraps to really demonstrate how it differs per region. Also I show the different sectors on the x axis. It's a little cluttered, but I think it's important to show each region here. Later, I'll simplify my graphics to show only BRI regions, but here I think adding in Europe and the US really show how depending on which FDI sectors we look at, the division of investment differs dramatically. 
 
-ggplot(China_sector3, aes(x = sector, y = y_cum2, fill = region)) +
+plot5 <- ggplot(China_sector3, aes(x = sector, y = y_cum2, fill = region)) +
   geom_col() +
   labs(x = "BRI Sectors", y = "Investment by Sector", fill=NULL, title="Commulative BRI Investment by Sector: 2019") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +

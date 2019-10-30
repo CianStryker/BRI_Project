@@ -88,10 +88,10 @@ test49 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
 maybe <- test49 %>%
   summarize(coorelation = cor(y_cum4, GDP_Increase))
 
-ggplot(test49, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
+ggplot(test49, aes(x = log_GDP,  y = log_ycum, color  = "red")) +
    geom_jitter() +
-  labs(x= "BRI Chinese FDI (in Billions USD)",
-       y= "GDP PPP (in Billions USD)",
+  labs(x= "GDP PPP (in Billions USD)",
+       y= "BRI Chinese FDI (in Billions USD)",
        fill=NULL,
        title= "Regression of All Chinese FDI Recipient Countries") +
   guides(color = FALSE) +
@@ -99,12 +99,8 @@ ggplot(test49, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
 ```
 
 ```{r render = 'normal_print'}
-linearMod <- lm(FDI ~ GDP_Increase, data=test48)  
+linearMod <- lm(GDP_Increase ~ FDI, data=test48)  
 summ(linearMod)
-```
-
-```{r}
-gvlma::gvlma(linearMod)
 ```
 
 ```{r, BRI and GDP Scatter Plot }
@@ -147,8 +143,8 @@ test5 <- test4 %>%
 ggplot(test5, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
    geom_point() +
    geom_smooth(method = "lm", se = FALSE) + 
-  geom_text(data = subset(test5, FDI > 2e+10), aes(label = country2, hjust = 1.3, vjust = 1)) +
-  labs(x= "Cummalitve BRI Investment (in Billions USD)",
+  geom_label_repel(data = subset(test5, FDI > 2.5e+10), aes(label = country2, hjust = 1.3, vjust = 1)) +
+  labs(x= "Cummulative BRI Investment (in Billions USD)",
        y= "GDP PPP (in Billions USD)",
        fill=NULL,
        title= "Commulative FDI with GDP in 2019") +

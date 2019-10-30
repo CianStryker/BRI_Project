@@ -167,7 +167,7 @@ plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
 ```
 
 ```{r}
-plot_grid(plot_1, plot_2, labels = NULL)
+cowplot <- plot_grid(plot_1, plot_2, labels = NULL)
 ```
 
 ```{r}
@@ -176,15 +176,16 @@ x9 <- merge(x6, GDP_Final) %>%
          log_GDP = log10(GDP_Increase)) 
 
 x10 <- x9 %>%
-  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7"))
+  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
+  filter(log_y >= 0)
 
 ggplot(x10, aes(x = log_y,  y = log_GDP, color = PR)) +
   geom_jitter() +
   geom_smooth(method = "lm", se = FALSE) +
-  labs(x= "BRI Investment",
-       y= "GDP",
+  labs(x= "Log of Cummulative BRI Investment in Billions",
+       y= "GDP in Billions USD",
        fill=NULL,
-       title= "PR in 2019") +
+       title= "BRI Investment and GDP per Level of Political Rights in 2019") +
   facet_wrap(~PR)
 ```
 
