@@ -73,7 +73,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot1", height = ("600px")),
+               plotOutput(outputId = "plot1", height = ("700px")),
                
                tags$br(),
                
@@ -157,7 +157,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                plotOutput(outputId = "plot6", height = ("600px")), 
                
-               plotOutput(outputId = "plot7", height = ("600px"))
+               plotOutput(outputId = "plot7", height = ("700px"))
                
                
                
@@ -173,11 +173,17 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         column(width = 2),
         
         column(width = 8,
-            
-#Toggle section
-               plotOutput(outputId = "plot8", height = ("600px")) 
                
-               
+               sidebarLayout(
+                 sidebarPanel(
+                   sliderInput("years", label = h3("Slider"), min = 2005, 
+                               max = 2019, value = 1, sep = "")
+                 ),
+                 mainPanel(
+                   plotOutput("plot8")
+                 )
+                 
+               )
         ),
         
         column(width = 2)
@@ -235,11 +241,16 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 8,
                
-   # Toggle            
-               plotOutput(outputId = "plot12", height = ("600px"))
-               
-     
-               
+               sidebarLayout(
+                 sidebarPanel(
+                   sliderInput("years2", label = h3("Slider"), min = 2005, 
+                               max = 2018, value = 1, sep = "")
+                 ),
+                 mainPanel(
+                   plotOutput("plot12")
+                 )
+               )
+        
         ),
         
         column(width = 2)
@@ -278,7 +289,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 6, 
                
-               plotOutput(outputId = "plot18", height = ("600px"))
+               plotOutput(outputId = "plot18", height = ("700px"))
                
                ),
 
@@ -286,7 +297,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         column(width = 6,
                
 
-               plotOutput(outputId = "plot19", height = ("600px"))
+               plotOutput(outputId = "plot19", height = ("700px"))
               
                
               )
@@ -342,7 +353,21 @@ server <- function(input, output) {
     
     output$plot7 <- renderPlot(plot7)
     
-    output$plot8 <- renderPlot(plot8) # Make Reavtive
+    output$plot8 <- renderPlot({
+      # Subset the gapminder data by the chosen years
+      trial3 <- subset(trial2,
+                       year == input$years[1])
+      
+      ggplot(trial3, aes(x = country2, y = FDI, size = FDI, color = region)) +
+        geom_jitter()+
+        labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="BRI Investment Per Country") +
+        guides(size = FALSE, color = FALSE) +
+        theme(axis.text.x=element_blank()) +
+        facet_wrap(~region) +
+        expand_limits(y = 7e+10)
+      
+      
+    })
     
     output$plot9 <- renderPlot(plot9)
     
@@ -352,7 +377,22 @@ server <- function(input, output) {
       summary(linearMod)
     )
     
-    output$plot12 <- renderPlot(plot12)
+    output$plot12 <- renderPlot({
+      ohno <- subset(test4,
+                       year == input$years2[1])
+      
+      ggplot(ohno, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
+        geom_point() +
+        geom_text(data = subset(ohno, FDI > 2e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 1, vjust = -2)) +
+        labs(x= "BRI Chinese FDI (in Billions USD)",
+             y= "GDP PPP (in Billions USD)",
+             fill=NULL,
+             title="GDP and FDI") +
+        guides(size = FALSE, color = FALSE) +
+        facet_wrap(~region) +
+        expand_limits(y = 6e+12, x = 7e+10)
+      
+    })
     
     
     output$plot15 <- renderPlot(plot15)
