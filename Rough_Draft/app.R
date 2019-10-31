@@ -1,7 +1,27 @@
 
 library(shiny)
+library(readxl)
+library(reshape2)
+library(plyr)
+library(countrycode)
+library(janitor)
+library(jtools)
+library(kableExtra)
+library(gvlma)
+library(maps)
+library(png)
+library(cowplot)
+library(shinythemes)
+library(reprex)
+library(ggrepel)
+library(gganimate)
+library(tidyverse)
 
-ui <- fluidPage(
+
+
+ui <- fluidPage(theme = shinytheme("sandstone"),
+                
+                
     
     navbarPage(
         
@@ -33,7 +53,7 @@ ui <- fluidPage(
                
                tags$h2("Chinese Investment"),
                
-               tags$p("United States enjoying a near total global hegemony in both political and ecnonomic terms. The explosive economic growth of China, however, from the early 2000's to now, has challenged this concept and shifted public opinion to recognize the advent of a multi-polar world. A major goal of China during this period has been domestic economic growth, but as its economy imporved drastically, so did China's investment in foreign countries. Considering the Chinese Government's economic model, the relationship between private firms and the Communist party is closure than in most other countries. Examining China's Foreign Direct Investment, therefore gives insight into the Chinese government's overall geopolitical goals. This is especially true with the announcment of the 'One Belt, One Road project' in 2014, where Xi made it clear that China was interested in recreating the Silk Road. This ambitous infastrucutral investing project is mostly targetted towards developing regions such as West Asia, the Middle East, Sub-Saharan Africa, and South America. Many experts believe that this initiative, the Belt and Road Initiative, is actually an ambitious attempt to win political influence and capture emerging markets in vital areas neglected by the U.S. with the ultimate goal of shifting the economic center of the world from New York City to Beijing. "),
+               tags$p("There is a consensus among experts that with the dissolution of the USSR in 1991, the world became unipolar with the United States enjoying a near total global hegemony in both political and ecnonomic terms. The explosive economic growth of China, however, from the early 2000's to now, has challenged this concept and shifted public opinion to recognize the advent of a multi-polar world. A major goal of China during this period has been domestic economic growth, but as its economy imporved drastically, so did China's investment in foreign countries. Considering the Chinese Government's economic model, the relationship between private firms and the Communist party is closure than in most other countries. Examining China's Foreign Direct Investment, therefore gives insight into the Chinese government's overall geopolitical goals. This is especially true with the announcment of the 'One Belt, One Road project' in 2014, where Xi made it clear that China was interested in recreating the Silk Road. This ambitous infastrucutral investing project is mostly targetted towards developing regions such as West Asia, the Middle East, Sub-Saharan Africa, and South America. Many experts believe that this initiative, the Belt and Road Initiative, is actually an ambitious attempt to win political influence and capture emerging markets in vital areas neglected by the U.S. with the ultimate goal of shifting the economic center of the world from New York City to Beijing. "),
                
                tags$br()
                
@@ -84,11 +104,10 @@ ui <- fluidPage(
         
              plotOutput(outputId = "plot3", height = ("600px")),
              
-             tags$p("This next graph displays commulative Chinese FDI in 2019, so the total sum of all FDI since 2005. It shows that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa recieved the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence world wide as many experts believe? Where does the Belt and Road Initiative fit into this picture?"),
+             tags$p("We see  that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa recieved the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence world wide as many experts believe? Where does the Belt and Road Initiative fit into this picture?"),
              
-             tags$br(),
+             tags$br()
              
-             plotOutput(outputId = "plot4", height = ("600px"))
       ),
       
       column(width = 2)
@@ -126,7 +145,183 @@ ui <- fluidPage(
     ),
     tabPanel(
       
-      title = "Belt and Road Initiative"
+      title = "Belt and Road Initiative", 
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+               tags$h1("BRI"), 
+               
+               plotOutput(outputId = "plot6", height = ("600px")), 
+               
+               plotOutput(outputId = "plot7", height = ("600px"))
+               
+               
+               
+               
+        ),
+        
+        column(width = 2)
+        
+      ),
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+            
+#Toggle section
+               plotOutput(outputId = "plot8", height = ("600px")) 
+               
+               
+        ),
+        
+        column(width = 2)
+        
+      ),
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+               
+
+               plotOutput(outputId = "plot9", height = ("600px"))
+               
+               
+               
+               
+        ),
+        
+        column(width = 2)
+        
+      )
+      
+    ),
+    
+    tabPanel(
+      
+      title = "Economic Effects of BRI", 
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+               tags$h1("BRI and GDP"), 
+               
+               plotOutput(outputId = "plot10", height = ("600px")), 
+               
+               verbatimTextOutput(outputId = "plot11")
+               
+
+               
+        ),
+        
+        column(width = 2)
+        
+      ),
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+   # Toggle            
+               plotOutput(outputId = "plot12", height = ("600px"))
+               
+     
+               
+        ),
+        
+        column(width = 2)
+        
+      )
+      
+    ),
+    
+    tabPanel(
+      
+      title = "Political Effects of BRI", 
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+               tags$h1("BRI and Political Rights"), 
+               
+               plotOutput(outputId = "plot15", height = ("600px")), 
+               
+               verbatimTextOutput(outputId = "plot17")
+
+               
+               
+               
+               
+        ),
+        
+        column(width = 2)
+        
+      ),
+      
+      fluidRow(
+        
+        column(width = 6, 
+               
+               plotOutput(outputId = "plot18", height = ("600px"))
+               
+               ),
+
+        
+        column(width = 6,
+               
+
+               plotOutput(outputId = "plot19", height = ("600px"))
+              
+               
+              )
+        
+
+      )
+      
+    ),
+    
+    tabPanel(
+      
+      title = "About", 
+      
+      fluidRow(
+        
+        column(width = 4),
+        
+        column(width = 6,
+               
+               tags$h1("Data"), 
+               
+               tags$p("Something about my data here"), 
+               
+               tags$h1("About me"), 
+               
+               tags$p("Something about me here"), 
+               
+               tags$h1("Source Code"), 
+               
+               tags$p("Git hub link") 
+               
+        ),
+        
+        column(width= 4)
+      )
       
     )
 
@@ -134,36 +329,43 @@ ui <- fluidPage(
 
 )
 server <- function(input, output) {
-    output$plot1 <- renderPlot({
-        plot(plot1)
-    }
-        
+  
+    output$plot1 <- renderPlot(plot1)
+      
+    output$plot2 <- renderPlot(plot2)
+    
+    output$plot3 <- renderPlot(plot3)
+    
+    output$plot5 <- renderPlot(plot5)
+    
+    output$plot6 <- renderPlot(plot6) 
+    
+    output$plot7 <- renderPlot(plot7)
+    
+    output$plot8 <- renderPlot(plot8) # Make Reavtive
+    
+    output$plot9 <- renderPlot(plot9)
+    
+    output$plot10 <- renderPlot(plot10)
+    
+    output$plot11 <- renderPrint(
+      summary(linearMod)
     )
     
-    output$plot2 <- renderPlot({
-      plot(plot2)
-    }
+    output$plot12 <- renderPlot(plot12)
     
+    
+    output$plot15 <- renderPlot(plot15)
+  
+    
+    
+    output$plot17 <- renderPrint(
+      summary(linearMod3) 
     )
     
-    output$plot3 <- renderPlot({
-      plot(plot3)
-    }
+    output$plot18 <- renderPlot(plot18)
     
-    )
-    
-    output$plot4 <- renderPlot({
-      plot(plot4)
-    }
-    
-    )
-    
-    output$plot5 <- renderPlot({
-      plot(plot5)
-    }
-    
-    )
-    
+    output$plot19 <- renderPlot(plot19)
 }
 
 

@@ -13,6 +13,8 @@ library(reshape2)
 library(plyr)
 library(countrycode)
 library(janitor)
+library(jtools)
+library(kableExtra)
 library(gvlma)
 library(maps)
 library(png)
@@ -41,7 +43,7 @@ map.world$country <- countrycode(map.world$country, "country.name", "country.nam
 
 ```
 
-```{r, First setup chunk, warning=FALSE}
+
 
 #Here's my first thing I want people to see. I want to find the cumulative amount of Chinese FDI per year. So I grab what I need first in terms of variables. 
 
@@ -63,8 +65,7 @@ China_test2 <- China_test1 %>%
 
 #Here I'm just merging my map.world data with my FDI data. Left join does exactly what I want so I use it. Maybe I could've used merge, but here I thought left_join was more appropriate. I join the two on the "country" column which is now uniform. 
 
-workss <- left_join(map.world, China_test2, by = c("country"))
-```
+
 
 ```{r, Commulative BRI graph by Target Region}
 China_sector4 <- Chinese_FDI %>%
@@ -79,16 +80,14 @@ China_sector4y <- China_sector4x %>%
   arrange(year) %>%
   group_by(region, country, sector) %>%
   mutate(y_cum3 = cumsum(quantity_in_millions)) %>%
-  mutate(FDI = y_cum3 * 1000000) 
+  mutate(FDI = y_cum3 * 1000000) %>%
+  filter(year == 2019)
 
-ggplot(China_sector4y, aes(x = sector, y = FDI, fill = region)) +
+plot6 <- ggplot(China_sector4y, aes(x = sector, y = FDI, fill = region)) +
   geom_col()+
-  labs(x= "Sector", y= "Foreign Direct Investment", fill=NULL, title="Chinese BRI Investment per Year: {closest_state}") +
+  labs(x= "Sector", y= "Foreign Direct Investment", fill=NULL, title="Chinese BRI Investment") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 12)) +
-  transition_states(year, transition_length = 2, state_length = 1) +
-  enter_fade() + 
   guides(fill = FALSE) +
-  ease_aes('sine-in-out')+ 
   facet_wrap(~region)
 
 ```
@@ -121,7 +120,7 @@ trial <- China2_x %>%
 ``` 
 
 ```{r, Map 2 only Target Reion, warning=FALSE}
-ggplot(workss2, aes( x = long, y = lat, group = group )) +
+plot7 <- ggplot(workss2, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = FDI)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
@@ -134,7 +133,7 @@ in USD'
        ,subtitle = '2019'
        ,x = NULL
        ,y = NULL) +
-  theme(text = element_text(family = 'Gill Sans', color = '#333333')
+  theme(text = element_text(color = '#333333')
         ,plot.title = element_text(size = 18)
         ,plot.subtitle = element_text(size = 14)
         ,axis.ticks = element_blank()
@@ -149,7 +148,6 @@ in USD'
            ,label = 'Source: Us Chamber of Commerce'
            ,x = 18, y = -55
            ,size = 3
-           ,family = 'Gill Sans'
            ,color = '#333333'
            ,hjust = 'left'
            )
@@ -162,15 +160,13 @@ trial2 <- China2_x %>%
   arrange(year) %>%
   group_by(region, country2) %>%
   mutate(y_cum = cumsum(quantity_in_millions)) %>%
-  mutate(FDI = y_cum * 1000000)
+  mutate(FDI = y_cum * 1000000) %>%
+  filter(year == 2019)
 
-ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) +
+plot8 <- ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) +
   geom_jitter()+
   geom_text(data = subset(trial2, y_cum > 20000), aes(label = country2, hjust = 0, vjust = -1.3)) +
-  labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="Year: {closest_state}") +
-  transition_states(year, transition_length = 2, state_length = 1) +
-  enter_fade() + 
-  ease_aes('sine-in-out') + 
+  labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="BRI Investment Per Country") +
   theme_bw() +
   guides(size = FALSE, color = FALSE) +
   theme(axis.text.x=element_blank()) +
@@ -179,12 +175,12 @@ ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) +
 
 ```{r, Highest BRI Investment Countries Labelled Scatter}
 
-trial2 <- trial %>%
+trial3 <- trial %>%
   filter(year == 2019) %>%
   mutate(FDI = y_cum *1000000) %>%
   filter(FDI >= 2e+10) 
 
-ggplot(trial2, aes(x = country, y = FDI, color = region)) +
+plot9 <- ggplot(trial3, aes(x = country, y = FDI, color = region)) +
   geom_point()+
   geom_label_repel(aes(label = country),
                   box.padding   = 0.35, 

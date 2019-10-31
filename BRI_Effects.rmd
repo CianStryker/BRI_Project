@@ -11,10 +11,10 @@ knitr::opts_chunk$set(echo = FALSE)
 library(readxl)
 library(reshape2)
 library(plyr)
-library(jtools)
-library(kableExtra)
 library(countrycode)
 library(janitor)
+library(jtools)
+library(kableExtra)
 library(gvlma)
 library(maps)
 library(png)
@@ -76,31 +76,29 @@ test39 <- test29 %>%
 
 test48 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   mutate(log_ycum = log10(FDI)) %>%
-  mutate(log_GDP = log10(GDP_Increase))
+  mutate(log_GDP = log10(GDP_Increase)) 
 
-test49 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
+FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   filter(year == 2018) %>%
   filter(GDP_Increase <= 1.0e+13 ) %>%
   mutate(log_ycum = log10(FDI)) %>%
   filter(log_ycum >= 0) %>%
-  mutate(log_GDP = log10(GDP_Increase)) 
+  mutate(log_GDP = log10(GDP_Increase)) %>%
+  mutate(GDP = GDP_Increase)
 
-maybe <- test49 %>%
-  summarize(coorelation = cor(y_cum4, GDP_Increase))
-
-ggplot(test49, aes(x = log_GDP,  y = log_ycum, color  = "red")) +
+plot10 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
    geom_jitter() +
-  labs(x= "GDP PPP (in Billions USD)",
-       y= "BRI Chinese FDI (in Billions USD)",
+  labs(x= "Cummulative Chinese FDI (in Billions USD)",
+       y= "GDP PPP (in Billions USD)",
        fill=NULL,
-       title= "Regression of All Chinese FDI Recipient Countries") +
+       title= "Regression of All Chinese FDI Recipient Countries: 2018") +
   guides(color = FALSE) +
    geom_smooth(method = "lm", se = FALSE) 
 ```
 
 ```{r render = 'normal_print'}
-linearMod <- lm(GDP_Increase ~ FDI, data=test48)  
-summ(linearMod)
+linearMod <- lm(FDI ~ GDP, data=FDI_GDP)  
+plot11 <- summ(linearMod)
 ```
 
 ```{r, BRI and GDP Scatter Plot }
@@ -118,29 +116,27 @@ test3 <- test2 %>%
   mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum4 * 1000000)
 
-test4 <- merge(test3, GDP_Final, by = c("year", "country2")) 
+test4 <- merge(test3, GDP_Final, by = c("year", "country2")) %>%
+  filter(year == 2018)
 ```
 
 ```{r}
-ggplot(test4, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
+plot12 <- ggplot(test4, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
   geom_point() +
   geom_text(data = subset(test4, FDI > 3e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 0, vjust = -1.3)) +
   labs(x= "BRI Chinese FDI (in Billions USD)",
        y= "GDP PPP (in Billions USD)",
        fill=NULL,
-       title="Year {closest_state}") +
-  transition_states(year, transition_length = 4, state_length = 4) +
-  enter_fade() +
+       title="GDP and FDI") +
   guides(size = FALSE, color = FALSE) +
-  ease_aes('sine-in-out')+
   facet_wrap(~region)
 ```
 
-```{r}
+
 test5 <- test4 %>%
   filter(year == 2018)
 
-ggplot(test5, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
+plot13 <- ggplot(test5, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
    geom_point() +
    geom_smooth(method = "lm", se = FALSE) + 
   geom_label_repel(data = subset(test5, FDI > 2.5e+10), aes(label = country2, hjust = 1.3, vjust = 1)) +
@@ -150,7 +146,7 @@ ggplot(test5, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
        title= "Commulative FDI with GDP in 2019") +
   guides(size = FALSE, color = FALSE) +
   facet_wrap(~region)
-```
+
 
 
 

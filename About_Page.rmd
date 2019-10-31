@@ -15,7 +15,15 @@ library(reshape2)
 library(plyr)
 library(countrycode)
 library(janitor)
+library(jtools)
+library(kableExtra)
+library(gvlma)
 library(maps)
+library(png)
+library(cowplot)
+library(reprex)
+library(ggrepel)
+library(gganimate)
 library(tidyverse)
 ```
 
@@ -74,7 +82,7 @@ China_test2 <- China_test1 %>%
 workss <- left_join(map.world, China_test2, by = c("country"))
 ```
 ## Foreign Direct Investment Broadly
-```{r, Maping chunk, warning=FALSE}
+```{r, Maping chunk}
 
 #Here is my map code chunk! This was pretty difficult, but essentially its ggplot with a ton of details thrown in. I had to go to Stackoverflow to get a template and then tweak it to make it my own. Using the combined data from before I can fill in the data per country across the globe. Super cool. I tweak the values for the legend and colors. I also tweak the colors to make it more logical and recognizable for the reader. Hmm... I also add in some aesthetic choices such as labels, removing tick marks, and adding in a source label. Feel free to critique but I really like this and I want to use it alot for different stages of my project.
 
@@ -92,7 +100,7 @@ in USD'
        ,subtitle = '2019'
        ,x = NULL
        ,y = NULL) +
-  theme(text = element_text(family = 'Gill Sans', color = '#333333')
+  theme(text = element_text(color = '#333333')
         ,plot.title = element_text(size = 18)
         ,plot.subtitle = element_text(size = 14)
         ,axis.ticks = element_blank()
@@ -107,7 +115,6 @@ in USD'
            ,label = 'Source: The American Enterprise Institute and The Heritage Foundation'
            ,x = 14, y = -55
            ,size = 2
-           ,family = 'Gill Sans'
            ,color = '#333333'
            ,hjust = 'left'
            )
@@ -196,7 +203,7 @@ plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
 This next graph displays commulative Chinese FDI in 2019, so the total sum of all FDI since 2005. It shows that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa recieved the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence world wide as many experts believe? Where does the Belt and Road Initiative fit into this picture? 
 
 
-```{r, Regional Bar Chart}
+
 
 #So here I want to show this regional divide but in a bar chart and specifically the cummulative amount by 2019. SO I run another cummulative caluculation chunk.
 
@@ -219,7 +226,7 @@ plot4 <- ggplot(China_2x, aes(x = region, y = FDI, fill = region)) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
   guides(fill = FALSE) 
 
-```
+
 
 
 ## "One Belt, One Road"
@@ -251,6 +258,9 @@ China_sector2 <- China_sector1 %>%
 
 China_sector3 <- China_sector2 %>%
     filter(year == 2019)
+```
+
+```{r}
 
 #This is essentially a simple bar chart, but I've added in enough facet wraps to really demonstrate how it differs per region. Also I show the different sectors on the x axis. It's a little cluttered, but I think it's important to show each region here. Later, I'll simplify my graphics to show only BRI regions, but here I think adding in Europe and the US really show how depending on which FDI sectors we look at, the division of investment differs dramatically. 
 
@@ -260,6 +270,7 @@ plot5 <- ggplot(China_sector3, aes(x = sector, y = y_cum2, fill = region)) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
   guides(fill = FALSE) +
   facet_wrap(~region)
+
 ```
 ## "One Belt, One Road"
 
