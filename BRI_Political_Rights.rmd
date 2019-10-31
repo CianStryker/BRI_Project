@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
 library(readxl)
 library(reshape2)
 library(plyr)
@@ -32,6 +33,7 @@ Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country
 Chinese_FDI$country2 = Chinese_FDI$country
 
 Chinese_FDI$country2 <- countrycode(Chinese_FDI$country2, "country.name", "iso2c")
+
 ```
 
 ```{r, Freedom House Loading, include=FALSE}
@@ -45,17 +47,12 @@ colnames(Pr_1)[colnames(Pr_1) == 'Country'] <- 'country'
 
 
 Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
-
-
-Pr_2 <- Pr_1 
 ```
 
 ```{r, Mapwold loading, warning=FALSE}
-
 map.world <- map_data('world')
 colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
 map.world$country <- countrycode(map.world$country, "country.name", "country.name")
-
 ```
 
 ```{r, GDP loading, message=FALSE, warning=FALSE}
@@ -97,16 +94,6 @@ x5 <- merge(x4, Pr_1, by = c("year", "country")) %>%
   filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
   group_by(PR)
 ```
-
-```{r}
-ggplot(x5, aes(x = PR, y = FDI, fill = PR)) + 
-  geom_col() +
-  labs(x="Politcal Rights", y="Cummulative FDI", fill=NULL, title="Year {closest_state}") +
-  transition_states(year, transition_length = 4, state_length = 4) +
-  enter_fade() +
-  guides(size = FALSE) +
-  ease_aes('sine-in-out')
-``` 
 
 ```{r, PR Map}
 
@@ -167,39 +154,26 @@ plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
 ```
 
 ```{r}
-cowplot <- plot_grid(plot_1, plot_2, labels = NULL)
+plot15 <- plot_grid(plot_1, plot_2, labels = NULL)
 ```
 
 ```{r}
-x9 <- merge(x6, GDP_Final) %>%
-  mutate(log_y = log10(y_cum5), 
-         log_GDP = log10(GDP_Increase)) 
 
-x10 <- x9 %>%
-  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
-  filter(log_y >= 0)
+FDI_PR <- merge(x6, GDP_Final) %>%
+  mutate(GDP = GDP_Increase, 
+         FDI = y_cum5) %>%
+  filter(year == 2018)
 
-ggplot(x10, aes(x = log_y,  y = log_GDP, color = PR)) +
-  geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(x= "Log of Cummulative BRI Investment in Billions",
-       y= "GDP in Billions USD",
-       fill=NULL,
-       title= "BRI Investment and GDP per Level of Political Rights in 2019") +
-  facet_wrap(~PR)
-```
-
-```{r}
-linearMod3 <- lm(y_cum5 ~ GDP_Increase + PR, data=x9)  
+linearMod3 <- lm(FDI ~ GDP + PR, data=FDI_PR)  
 print(linearMod3)
-summ(linearMod3)
+plot17 <- summ(linearMod3)
 ```
 
 
 
 ```{r, warning=FALSE}
 
-ggplot(Map1x, aes( x = long, y = lat, group = group )) +
+plot18 <- ggplot(Map1x, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = PR)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
@@ -208,7 +182,7 @@ ggplot(Map1x, aes( x = long, y = lat, group = group )) +
        ,subtitle = '2005'
        ,x = NULL
        ,y = NULL) +
-  theme(text = element_text(family = 'Gill Sans', color = '#333333')
+  theme(text = element_text(color = '#333333')
         ,plot.title = element_text(size = 18)
         ,plot.subtitle = element_text(size = 14)
         ,axis.ticks = element_blank()
@@ -223,7 +197,6 @@ ggplot(Map1x, aes( x = long, y = lat, group = group )) +
            ,label = 'Source: Freedom House'
            ,x = 18, y = -55
            ,size = 3
-           ,family = 'Gill Sans'
            ,color = '#333333'
            ,hjust = 'left'
            )
@@ -231,7 +204,7 @@ ggplot(Map1x, aes( x = long, y = lat, group = group )) +
 
 ```{r, warning=FALSE}
 
-ggplot(Map2x, aes( x = long, y = lat, group = group )) +
+plot19 <- ggplot(Map2x, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = PR)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
@@ -240,7 +213,7 @@ ggplot(Map2x, aes( x = long, y = lat, group = group )) +
        ,subtitle = '2018'
        ,x = NULL
        ,y = NULL) +
-  theme(text = element_text(family = 'Gill Sans', color = '#333333')
+  theme(text = element_text(color = '#333333')
         ,plot.title = element_text(size = 18)
         ,plot.subtitle = element_text(size = 14)
         ,axis.ticks = element_blank()
@@ -255,7 +228,6 @@ ggplot(Map2x, aes( x = long, y = lat, group = group )) +
            ,label = 'Source: Freedom House'
            ,x = 18, y = -55
            ,size = 3
-           ,family = 'Gill Sans'
            ,color = '#333333'
            ,hjust = 'left'
            )

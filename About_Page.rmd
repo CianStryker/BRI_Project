@@ -114,7 +114,7 @@ in USD'
   annotate(geom = 'text'
            ,label = 'Source: The American Enterprise Institute and The Heritage Foundation'
            ,x = 14, y = -55
-           ,size = 2
+           ,size = 3
            ,color = '#333333'
            ,hjust = 'left'
            )
@@ -129,14 +129,7 @@ Below, however, is the culmination of all investments China has made per year. I
 
 ```{r, overall bar chart, message=FALSE}
 
-#Now I want to show in simpler terms just how Chinese FDI has increased over time. So I grab what I need to start. 
-
-China_simple <- Chinese_FDI %>%
-  select("year", "quantity_in_millions")
-
-#Nothing new here. Another aggregate command by year now.
-
-China_simple_1 <- aggregate(quantity_in_millions ~ year, data = China_simple, FUN = sum) %>%
+China_simple_1 <- aggregate(quantity_in_millions ~ year, data = Chinese_FDI, FUN = sum) %>%
   mutate(FDI = quantity_in_millions * 1000000)
 
 #This is just a simple ggplot bar graph to show how much FDI has increased since 2005. Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was necessary to get too fancy with this beyond labels.
@@ -145,7 +138,7 @@ plot2 <- ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
   guides(fill = FALSE) +
   geom_col() +
   labs(
-    title = "Chinese Direct Foreign Investment over Time",
+    title = "Chinese Direct Foreign Investment Per Year",
     x = "Years", 
     y = "FDI in USD"
   )
@@ -167,7 +160,7 @@ China <- Chinese_FDI %>%
 
 #Now I'm aggregating again but based of my new variables.
   
-China_1 <- aggregate(quantity_in_millions ~ country + year + region, data = China, FUN = sum)
+China_1 <- aggregate(quantity_in_millions ~ country + year + region, data = Chinese_FDI, FUN = sum)
 
 #This is another cummulative calculation. I find the cummulative data to be more illustrative of FDI effects than just yearly investment. 
 
@@ -195,38 +188,13 @@ plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
     y = "Commulative FDI in USD"
   ) +
   scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
+   scale_y_continuous(breaks = seq(0, 4e+11, 5e+10)) +
   guides(linetype = FALSE) 
 
 ```
 
 
 This next graph displays commulative Chinese FDI in 2019, so the total sum of all FDI since 2005. It shows that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa recieved the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence world wide as many experts believe? Where does the Belt and Road Initiative fit into this picture? 
-
-
-
-
-#So here I want to show this regional divide but in a bar chart and specifically the cummulative amount by 2019. SO I run another cummulative caluculation chunk.
-
-China_2x <- China_1 %>%
-  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
-  arrange(year) %>%
-  group_by(region, country) %>%
-  mutate(y_cum = cumsum(quantity_in_millions)) %>%
-  mutate(FDI = y_cum * 1000000) %>%
-  filter(year == 2019)
-
-#Then I just graph it. Minimal extra work was put into this. 
-
-plot4 <- ggplot(China_2x, aes(x = region, y = FDI, fill = region)) +
-  geom_col()+
-  labs(x= NULL,
-       y="Commulative FDI in USD", 
-       fill=NULL, 
-       title="Commulative Investment, 2019") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
-  guides(fill = FALSE) 
-
-
 
 
 ## "One Belt, One Road"
@@ -252,25 +220,37 @@ China_sector2 <- China_sector1 %>%
   complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country, sector) %>%
-  mutate(y_cum2 = cumsum(quantity_in_millions))
+  mutate(y_cum2 = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum2 * 1000000)
 
 #Here I just was the data for the year 2019. When I was adding into my previous bit of code it seemed to create issues so I just did it separately. Some issues are just not worth the time in my opinion if they can be handled quickly in a simpler, if less elegant, way. 
 
 China_sector3 <- China_sector2 %>%
     filter(year == 2019)
+
+w <-aggregate(FDI ~ region + year, data = China_sector2, FUN = sum) %>%
+  arrange(desc(FDI))
+  
 ```
 
 ```{r}
 
 #This is essentially a simple bar chart, but I've added in enough facet wraps to really demonstrate how it differs per region. Also I show the different sectors on the x axis. It's a little cluttered, but I think it's important to show each region here. Later, I'll simplify my graphics to show only BRI regions, but here I think adding in Europe and the US really show how depending on which FDI sectors we look at, the division of investment differs dramatically. 
 
-plot5 <- ggplot(China_sector3, aes(x = sector, y = y_cum2, fill = region)) +
-  geom_col() +
-  labs(x = "BRI Sectors", y = "Investment by Sector", fill=NULL, title="Commulative BRI Investment by Sector: 2019") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 10)) +
-  guides(fill = FALSE) +
-  facet_wrap(~region)
-
+plot5 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
+  geom_line(aes(linetype= "dash", color= region)) +
+  geom_point(aes(color=region)) +
+  labs(
+    color = "Region",
+    title = "Commulative BRI Investment over Time",
+    subtitle = "Per Region",
+    x = "Year",
+    y = "FDI in Billions USD"
+  ) +
+  scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
+  scale_y_continuous(breaks = seq(0, 2.5e+11, 5e+10)) +
+  guides(linetype = FALSE) 
+  
 ```
 ## "One Belt, One Road"
 

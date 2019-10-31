@@ -255,6 +255,21 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 2)
         
+      ),
+      
+      fluidRow(
+        
+        column(width = 2),
+        
+        column(width = 8,
+               
+               plotOutput(outputId = "plot13", height = ("600px")) 
+              
+               
+        ),
+        
+        column(width = 2)
+        
       )
       
     ),
@@ -359,7 +374,8 @@ server <- function(input, output) {
                        year == input$years[1])
       
       ggplot(trial3, aes(x = country2, y = FDI, size = FDI, color = region)) +
-        geom_jitter()+
+        geom_point()+
+        geom_text(data = subset(trial3, FDI >= .25e+10), aes(label = country2, hjust = .2, vjust = -2)) +
         labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="BRI Investment Per Country") +
         guides(size = FALSE, color = FALSE) +
         theme(axis.text.x=element_blank()) +
@@ -382,7 +398,7 @@ server <- function(input, output) {
                        year == input$years2[1])
       
       ggplot(ohno, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
-        geom_point() +
+        geom_jitter() +
         geom_text(data = subset(ohno, FDI > 2e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 1, vjust = -2)) +
         labs(x= "BRI Chinese FDI (in Billions USD)",
              y= "GDP PPP (in Billions USD)",
@@ -394,10 +410,9 @@ server <- function(input, output) {
       
     })
     
+    output$plot13 <- renderPlot(plot13)
     
     output$plot15 <- renderPlot(plot15)
-  
-    
     
     output$plot17 <- renderPrint(
       summary(linearMod3) 

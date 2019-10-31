@@ -43,30 +43,6 @@ map.world$country <- countrycode(map.world$country, "country.name", "country.nam
 
 ```
 
-
-
-#Here's my first thing I want people to see. I want to find the cumulative amount of Chinese FDI per year. So I grab what I need first in terms of variables. 
-
-China_test <- Chinese_FDI %>%
-  select("year", `quantity_in_millions`, "country")
-
-#Not its an aggregate function to find the total amount of FDI per year and country.
-  
-China_test1 <- aggregate(quantity_in_millions ~ country + year, data = China_test, FUN = sum)
-
-#Not I calculate the cumulative amount per year. I've used this function before so I'm comfortable with it. I do specify that I just want the cumulative FDI in 2019 to represent total investment, per country, from 2005 until now. 
-
-China_test2 <- China_test1 %>%
-  complete(year, nesting(country), fill = list(quantity_in_millions=0)) %>%
-  arrange(year) %>%
-  group_by(country) %>%
-  mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
-  filter(year == 2019)
-
-#Here I'm just merging my map.world data with my FDI data. Left join does exactly what I want so I use it. Maybe I could've used merge, but here I thought left_join was more appropriate. I join the two on the "country" column which is now uniform. 
-
-
-
 ```{r, Commulative BRI graph by Target Region}
 China_sector4 <- Chinese_FDI %>%
     select("country", "region", "year", "sector", "quantity_in_millions") %>%
@@ -145,7 +121,7 @@ in USD'
         ,legend.key = element_blank()
         ) +
   annotate(geom = 'text'
-           ,label = 'Source: Us Chamber of Commerce'
+           ,label = 'Source: The American Enterprise Institute and The Heritage Foundation'
            ,x = 18, y = -55
            ,size = 3
            ,color = '#333333'
@@ -160,12 +136,13 @@ trial2 <- China2_x %>%
   arrange(year) %>%
   group_by(region, country2) %>%
   mutate(y_cum = cumsum(quantity_in_millions)) %>%
-  mutate(FDI = y_cum * 1000000) %>%
-  filter(year == 2019)
+  mutate(FDI = y_cum * 1000000) 
+
+#This is a slider graph in shiny
 
 plot8 <- ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) +
   geom_jitter()+
-  geom_text(data = subset(trial2, y_cum > 20000), aes(label = country2, hjust = 0, vjust = -1.3)) +
+  geom_text(data = subset(trial2, FDI > 2e+10), aes(label = country2, hjust = 0, vjust = -1.3)) +
   labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="BRI Investment Per Country") +
   theme_bw() +
   guides(size = FALSE, color = FALSE) +
@@ -175,10 +152,18 @@ plot8 <- ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) 
 
 ```{r, Highest BRI Investment Countries Labelled Scatter}
 
-trial3 <- trial %>%
+trial2x <- China2_x %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum * 1000000) 
+
+trial3 <- trial2x %>%
+  ungroup() %>%
   filter(year == 2019) %>%
-  mutate(FDI = y_cum *1000000) %>%
-  filter(FDI >= 2e+10) 
+  filter(FDI >= 1.5e+10) %>%
+  select("year", "region", "country", "FDI")
 
 plot9 <- ggplot(trial3, aes(x = country, y = FDI, color = region)) +
   geom_point()+
