@@ -93,7 +93,7 @@ plot10 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
        fill=NULL,
        title= "Regression of All Chinese FDI Recipient Countries: 2018") +
   guides(color = FALSE) +
-   geom_smooth(method = "lm", se = FALSE) 
+   geom_smooth(method = "lm") 
 ```
 
 ```{r render = 'normal_print'}
