@@ -86,7 +86,7 @@ FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   mutate(log_GDP = log10(GDP_Increase)) %>%
   mutate(GDP = GDP_Increase)
 
-plot10 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
+plot9 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
    geom_jitter() +
   labs(x= "Cummulative Chinese FDI (in Billions USD)",
        y= "GDP PPP (in Billions USD)",
@@ -97,8 +97,7 @@ plot10 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
 ```
 
 ```{r render = 'normal_print'}
-linearMod <- lm(FDI ~ GDP, data=FDI_GDP)  
-plot11 <- summ(linearMod)
+linearMod10 <- lm(FDI ~ GDP, data=FDI_GDP)  
 ```
 
 ```{r, BRI and GDP Scatter Plot }
@@ -116,13 +115,13 @@ test3 <- test2 %>%
   mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum4 * 1000000)
 
-test4 <- merge(test3, GDP_Final, by = c("year", "country2")) 
+data11 <- merge(test3, GDP_Final, by = c("year", "country2")) 
 ```
 
 ```{r}
-plot12 <- ggplot(test4, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
+plot11 <- ggplot(data11, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
   geom_point() +
-  geom_text(data = subset(test4, FDI > 3e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 0, vjust = -1.3)) +
+  geom_text(data = subset(data11, FDI > 3e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 0, vjust = -1.3)) +
   labs(x= "BRI Chinese FDI (in Billions USD)",
        y= "GDP PPP (in Billions USD)",
        fill=NULL,
@@ -133,7 +132,7 @@ plot12 <- ggplot(test4, aes(x = FDI, size = FDI, color = region, y = GDP_Increas
 ```
 
 ```{r}
-ohnoo <- test4 %>%
+ohnoo <- data11 %>%
   ungroup() %>%
   filter(year == 2018) %>%
   filter(FDI >= 1.5e+10) %>%
@@ -142,7 +141,7 @@ ohnoo <- test4 %>%
 
 
 
-plot13 <- ggplot(ohnoo, aes(x = FDI, color = region, y = GDP_Increase)) +
+plot12 <- ggplot(ohnoo, aes(x = FDI, color = region, y = GDP_Increase)) +
   geom_point() +
    geom_label_repel(aes(label = country),
                   box.padding   = 0.35, 

@@ -1,14 +1,7 @@
 
 library(shiny)
-library(readxl)
-library(reshape2)
-library(plyr)
-library(countrycode)
-library(janitor)
-library(jtools)
-library(kableExtra)
-library(gvlma)
 library(maps)
+library(readr)
 library(png)
 library(cowplot)
 library(shinythemes)
@@ -16,6 +9,23 @@ library(reprex)
 library(ggrepel)
 library(gganimate)
 library(tidyverse)
+
+plot1 <- read_rds("r_objects/plot1.rds")
+plot2 <- read_rds("r_objects/plot2.rds")
+plot3 <- read_rds("r_objects/plot3.rds")
+plot4 <- read_rds("r_objects/plot4.rds")
+plot5 <- read_rds("r_objects/plot5.rds")
+plot6 <- read_rds("r_objects/plot6.rds")
+data7 <- read_rds("r_objects/data7.rds")
+plot8 <- read_rds("r_objects/plot8.rds")
+plot9 <- read_rds("r_objects/plot9.rds")
+linearMod10 <- read_rds("r_objects/linearMod10.rds")
+data11 <- read_rds("r_objects/data11.rds")
+plot12 <- read_rds("r_objects/plot12.rds")
+plot13 <- read_rds("r_objects/plot13.rds")
+linearMod14 <- read_rds("r_objects/linearMod14.rds")
+plot15 <- read_rds("r_objects/plot15.rds")
+plot16 <- read_rds("r_objects/plot16.rds")
 
 ui <- fluidPage(theme = shinytheme("sandstone"),
                 
@@ -124,7 +134,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
              
              tags$br(), 
              
-             plotOutput(outputId = "plot5", height = ("600px")), 
+             plotOutput(outputId = "plot4", height = ("600px")), 
              
              tags$br(), 
              
@@ -153,9 +163,9 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$h1("BRI"), 
                
-               plotOutput(outputId = "plot6", height = ("600px")), 
+               plotOutput(outputId = "plot5", height = ("600px")), 
                
-               plotOutput(outputId = "plot7", height = ("700px"))
+               plotOutput(outputId = "plot6", height = ("700px"))
                
                
                
@@ -178,7 +188,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                                max = 2019, value = 1, sep = "")
                  ),
                  mainPanel(
-                   plotOutput("plot8")
+                   plotOutput("plot7")
                  )
                  
                )
@@ -196,7 +206,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                
 
-               plotOutput(outputId = "plot9", height = ("600px"))
+               plotOutput(outputId = "plot8", height = ("600px"))
                
                
                
@@ -221,9 +231,9 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$h1("BRI and GDP"), 
                
-               plotOutput(outputId = "plot10", height = ("600px")), 
+               plotOutput(outputId = "plot9", height = ("600px")), 
                
-               verbatimTextOutput(outputId = "plot11")
+               verbatimTextOutput(outputId = "plot10")
                
 
                
@@ -245,7 +255,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                                max = 2018, value = 1, sep = "")
                  ),
                  mainPanel(
-                   plotOutput("plot12")
+                   plotOutput("plot11")
                  )
                )
         
@@ -261,7 +271,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 8,
                
-               plotOutput(outputId = "plot13", height = ("600px")) 
+               plotOutput(outputId = "plot12", height = ("600px")) 
               
                
         ),
@@ -284,9 +294,9 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$h1("BRI and Political Rights"), 
                
-               plotOutput(outputId = "plot15", height = ("600px")), 
+               plotOutput(outputId = "plot13", height = ("600px")), 
                
-               verbatimTextOutput(outputId = "plot17")
+               verbatimTextOutput(outputId = "plot14")
 
                
                
@@ -302,7 +312,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 6, 
                
-               plotOutput(outputId = "plot18", height = ("700px"))
+               plotOutput(outputId = "plot15", height = ("700px"))
                
                ),
 
@@ -310,7 +320,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         column(width = 6,
                
 
-               plotOutput(outputId = "plot19", height = ("700px"))
+               plotOutput(outputId = "plot16", height = ("700px"))
               
                
               )
@@ -360,15 +370,15 @@ server <- function(input, output) {
     
     output$plot3 <- renderPlot(plot3)
     
-    output$plot5 <- renderPlot(plot5)
+    output$plot4 <- renderPlot(plot4)
     
-    output$plot6 <- renderPlot(plot6) 
+    output$plot5 <- renderPlot(plot5) 
     
-    output$plot7 <- renderPlot(plot7)
+    output$plot6 <- renderPlot(plot6)
     
-    output$plot8 <- renderPlot({
+    output$plot7 <- renderPlot({
       # Subset the gapminder data by the chosen years
-      trial3 <- subset(trial2,
+      trial3 <- subset(data7,
                        year == input$years[1])
       
       ggplot(trial3, aes(x = country2, y = FDI, size = FDI, color = region)) +
@@ -383,16 +393,16 @@ server <- function(input, output) {
       
     })
     
+    output$plot8 <- renderPlot(plot8)
+    
     output$plot9 <- renderPlot(plot9)
     
-    output$plot10 <- renderPlot(plot10)
-    
-    output$plot11 <- renderPrint(
-      summary(linearMod)
+    output$plot10 <- renderPrint(
+      summary(linearMod10)
     )
     
-    output$plot12 <- renderPlot({
-      ohno <- subset(test4,
+    output$plot11 <- renderPlot({
+      ohno <- subset(data11,
                        year == input$years2[1])
       
       ggplot(ohno, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
@@ -408,20 +418,19 @@ server <- function(input, output) {
       
     })
     
+    output$plot12 <- renderPlot(plot12)
+    
     output$plot13 <- renderPlot(plot13)
+    
+    output$plot14 <- renderPrint(
+      summary(linearMod14) 
+    )
     
     output$plot15 <- renderPlot(plot15)
     
-    output$plot17 <- renderPrint(
-      summary(linearMod3) 
-    )
-    
-    output$plot18 <- renderPlot(plot18)
-    
-    output$plot19 <- renderPlot(plot19)
+    output$plot16 <- renderPlot(plot16)
 }
 
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-da

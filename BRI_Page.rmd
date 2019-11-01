@@ -59,7 +59,7 @@ China_sector4y <- China_sector4x %>%
   mutate(FDI = y_cum3 * 1000000) %>%
   filter(year == 2019)
 
-plot6 <- ggplot(China_sector4y, aes(x = sector, y = FDI, fill = region)) +
+plot5 <- ggplot(China_sector4y, aes(x = sector, y = FDI, fill = region)) +
   geom_col()+
   labs(x= "Sector", y= "Foreign Direct Investment", fill=NULL, title="Chinese BRI Investment") +
   theme(axis.text.x = element_text(angle = 60, hjust = 1, size = 12)) +
@@ -96,7 +96,7 @@ trial <- China2_x %>%
 ``` 
 
 ```{r, Map 2 only Target Reion, warning=FALSE}
-plot7 <- ggplot(workss2, aes( x = long, y = lat, group = group )) +
+plot6 <- ggplot(workss2, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = FDI)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
@@ -131,7 +131,7 @@ in USD'
 
 ```{r, BRI per Country Scatter Graph}
 
-trial2 <- China2_x %>%
+data7 <- China2_x %>%
   complete(year, nesting(country2, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country2) %>%
@@ -140,14 +140,6 @@ trial2 <- China2_x %>%
 
 #This is a slider graph in shiny
 
-plot8 <- ggplot(trial2, aes(x = country2, y = FDI, size = FDI, color = region)) +
-  geom_jitter()+
-  geom_text(data = subset(trial2, FDI > 2e+10), aes(label = country2, hjust = 0, vjust = -1.3)) +
-  labs(x= "Countries", y="Foreign Direct Investment", fill= NULL, title="BRI Investment Per Country") +
-  theme_bw() +
-  guides(size = FALSE, color = FALSE) +
-  theme(axis.text.x=element_blank()) +
-  facet_wrap(~region)
 ```
 
 ```{r, Highest BRI Investment Countries Labelled Scatter}
@@ -165,7 +157,7 @@ trial3 <- trial2x %>%
   filter(FDI >= 1.5e+10) %>%
   select("year", "region", "country", "FDI")
 
-plot9 <- ggplot(trial3, aes(x = country, y = FDI, color = region)) +
+plot8 <- ggplot(trial3, aes(x = country, y = FDI, color = region)) +
   geom_point()+
   geom_label_repel(aes(label = country),
                   box.padding   = 0.35, 

@@ -238,7 +238,7 @@ w <-aggregate(FDI ~ region + year, data = China_sector2, FUN = sum) %>%
 
 #This is essentially a simple bar chart, but I've added in enough facet wraps to really demonstrate how it differs per region. Also I show the different sectors on the x axis. It's a little cluttered, but I think it's important to show each region here. Later, I'll simplify my graphics to show only BRI regions, but here I think adding in Europe and the US really show how depending on which FDI sectors we look at, the division of investment differs dramatically. 
 
-plot5 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
+plot4 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
   geom_line(aes(linetype= "dash", color= region)) +
   geom_point(aes(color=region)) +
   labs(
@@ -256,3 +256,6 @@ plot5 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
 ## "One Belt, One Road"
 
 Of note with the Graph above is that when we only look at the key infastrucutral sectors that comprise BRI's focus, it is clear that the four target regions of West Asia, the Middle East, Sub-Saharan Africa, and South America, recieve far more funding than Europe or the U.S. This also suggests that a closure examination of these four target regions would aid in understanding the One Belt, One Road project as a whole. 
+
+
+

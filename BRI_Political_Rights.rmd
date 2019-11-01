@@ -154,7 +154,7 @@ plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
 ```
 
 ```{r}
-plot15 <- plot_grid(plot_1, plot_2, labels = NULL)
+plot13 <- plot_grid(plot_1, plot_2, labels = NULL)
 ```
 
 ```{r}
@@ -164,16 +164,14 @@ FDI_PR <- merge(x6, GDP_Final) %>%
          FDI = y_cum5) %>%
   filter(year == 2018)
 
-linearMod3 <- lm(FDI ~ GDP + PR, data=FDI_PR)  
-print(linearMod3)
-plot17 <- summ(linearMod3)
+linearMod14 <- lm(FDI ~ GDP + PR, data=FDI_PR)  
 ```
 
 
 
 ```{r, warning=FALSE}
 
-plot18 <- ggplot(Map1x, aes( x = long, y = lat, group = group )) +
+plot15 <- ggplot(Map1x, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = PR)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
@@ -204,7 +202,7 @@ plot18 <- ggplot(Map1x, aes( x = long, y = lat, group = group )) +
 
 ```{r, warning=FALSE}
 
-plot19 <- ggplot(Map2x, aes( x = long, y = lat, group = group )) +
+plot16 <- ggplot(Map2x, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = PR)) +
   guides(fill = guide_legend(reverse = T,)) +
   scale_fill_discrete() +
