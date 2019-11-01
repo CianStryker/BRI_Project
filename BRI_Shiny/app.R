@@ -17,8 +17,6 @@ library(ggrepel)
 library(gganimate)
 library(tidyverse)
 
-
-
 ui <- fluidPage(theme = shinytheme("sandstone"),
                 
                 
@@ -426,4 +424,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-
+da
