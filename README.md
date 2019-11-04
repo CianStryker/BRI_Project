@@ -1,0 +1,2 @@
+# China and the Belt and Road Initiative
+In this project I am analyzing China's use of Foreign Direct investment, especially investment that is apart of the Belt and Road Initiative. The project is largley descriptive in nature although I do use some statistical modelling in the form of regressions to demonstrate the impact that BRI may have on the economic growth and poltical preferences of recipient countries.  
