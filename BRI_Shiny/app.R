@@ -35,20 +35,6 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         
         column(width = 8,
                
-               tags$h1("China and 'One Belt, One Road'")
-               
-        ),
-        
-        column(width = 2)
-        
-    ),
-    
-    fluidRow(
-        
-        column(width = 2),
-        
-        column(width = 8,
-               
                tags$h2("Chinese Investment"),
 
                tags$p("There is a consensus among experts that with the dissolution of the USSR in 1991, the world became unipolar with the United States enjoying a near total global hegemony in both political and economic terms. The explosive economic growth of China, however, from the early 2000's to now, has challenged this concept and shifted public opinion to recognize the advent of a multi-polar world. A major goal of China during this period has been domestic economic growth, but as its economy improved drastically, so did China's investment in foreign countries. Considering the Chinese Government's economic model, the relationship between private firms and the Communist party is closure than in most other countries. Examining China's Foreign Direct Investment, therefore gives insight into the Chinese government's overall geopolitical goals. This is especially true with the announcement of the 'One Belt, One Road project' in 2014, where Xi made it clear that China was interested in recreating the Silk Road. This ambitious infrastructural investing project is mostly targeted towards developing regions such as West Asia, the Middle East, Sub-Saharan Africa, and South America. Many experts believe that this initiative, the Belt and Road Initiative, is actually an ambitious attempt to win political influence and capture emerging markets in vital areas neglected by the U.S. with the ultimate goal of shifting the economic center of the world from New York City to Beijing."),
@@ -423,25 +409,37 @@ ui <- fluidPage(theme = shinytheme("superhero"),
       
       fluidRow(
         
-        column(width = 4),
+        column(width = 3),
         
         column(width = 6,
                
+               tags$h1("Conclusion"),
+               
+               tags$p("The purpose of this report was not to identify any causal impact of Chinese Direct Investment or the Belt and Road Initiative overall. That is task that requires much more precise models and more data than is realistically available at this point. The purpose was to describe in broad terms the scope of Chinese FDI and if any broad economic or political trends are visible due to this large-scale investment increase. China’s economic growth has been shocking and its growing role in international relations dictates that its activities should be better understood and analyzed. This report will hopefully serve as a clear introduction to this phenomenon. "), 
+               
+               tags$p("I would not say that there are clear conclusions from my report or that my goal was ever to produce conclusions to begin within. To summarize the narrative of the report though, Chinese investment has grown tremendously overtime but the regional preference for investment depends on the investment sector. In isolating Belt and Road Initiative investment sectors, a clear preference for Asia, the Middle East, Africa, and South America is visible. In examining economic and political trends in these regions, high economic performance attracts Chinese investment and that investment in turn has a positive impact on overall economic growth. In terms of political trends though, little to no relationship exists. In either model, however, the amount of variance not explained by the models used is high, which suggests, as you might expect, that such a complicated topic requires much more complex and more in-depth analysis. "), 
+               
                tags$h1("Data"), 
                
-               tags$p("Something about my data here"), 
+               tags$p("The data sets for the project are the following:"), 
+               
+               tags$p("American Enterprise Foundation’s Global Investment Tracker: https://www.aei.org/china-global-investment-tracker/"), 
+               
+               tags$p("The World Bank’s GDP (PPP) Data: https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD"), 
+               
+               tags$p("Freedom House’s Political Rights Index: https://freedomhouse.org/report/freedom-world/freedom-world-2018"),
                
                tags$h1("About me"), 
                
-               tags$p("Something about me here"), 
+               tags$p("My name is Cian Stryker and I am a graduate student at Harvard University. I am pursuing a Master’s in Russian, Eastern European, and Central Asian studies with a focus on the Digital Silk Road, or the digital aspect of the Belt and Road Initiative. I am especially interested in the digital expansion of Chinese technology and data management systems in Central Asia. This report was the final project for my ‘Data’ class at Harvard (GOV 1005). "), 
                
                tags$h1("Source Code"), 
                
-               tags$p("Git hub link") 
+               tags$p("Here is the link to my Github page for this project: https://github.com/CianStryker/BRI_Project") 
                
         ),
         
-        column(width= 4)
+        column(width= 3)
       )
       
     )
