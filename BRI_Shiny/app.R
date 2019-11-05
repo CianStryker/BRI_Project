@@ -2,6 +2,7 @@
 library(shiny)
 library(maps)
 library(readr)
+library(shinyanimate)
 library(png)
 library(cowplot)
 library(shinythemes)
@@ -27,7 +28,7 @@ linearMod14 <- read_rds("r_objects/linearMod14.rds")
 plot15 <- read_rds("r_objects/plot15.rds")
 plot16 <- read_rds("r_objects/plot16.rds")
 
-ui <- fluidPage(theme = shinytheme("sandstone"),
+ui <- fluidPage(theme = shinytheme("superhero"),
                 
                 
     
@@ -153,7 +154,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
     ),
     tabPanel(
       
-      title = "Belt and Road Initiative", 
+      title = "Belt and Road Initiative Broadly", 
       
       fluidRow(
         
@@ -163,11 +164,25 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$h1("BRI"), 
                
+               tags$br(), 
+               
+               tags$p("‘One Belt, One Road’ is mainly an infrastructural investment strategy, although it does have components outside this area of investment. For the purpose of this report, however, I focus on four major areas of investment: Energy, Metals, Real Estate, and Transport. These four key sectors comprise the focus of the Belt and Road Initiative as they are the sectors that best create physical, infrastructural connections between China and recipient countries. A major focus of BRI is to improve the physical connections between China and the target regions by investing in new roads, ports, trains, etc. Another focus is to invest in resource sectors directly, which is captured in the energy and metals sectors in the graph below. Real estate captures most of the large infrastructural projects such as new buildings, processing centers, and headquarters. In looking at the graph below, we can see that energy is the focus of BRI spending in all five target regions, typically followed by transport. Real estate and Transport then follow in importance "),
+               
+               tags$br(),
+               
                plotOutput(outputId = "plot5", height = ("600px")), 
                
-               plotOutput(outputId = "plot6", height = ("700px"))
+               tags$h1("BRI Geographically"), 
                
+               tags$br(),
                
+               tags$p("After dividing the BRI target regions into the sectors of investment, it is important to see geographically where the BRI investment is going. The map below shows where cumulative Chinese investments have gone from 2005 to 2019. It is clear that certain countries are receiving the bulk of the investment. Brazil, Russia, and Pakistan stand out the most from the other countries. Also, interesting to note is that within certain regions there are clear leaders, for example, within Central Asia Kazakhstan is the most popular investment target by China. "), 
+               
+               plotOutput(outputId = "plot6", height = ("700px")),
+               
+               tags$br()
+               
+              
                
                
         ),
@@ -182,13 +197,24 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 8,
                
+               tags$h1("Investment By Country"), 
+               
+               
+               tags$p("To see this cumulative effect more closely, the interactive graphic below allows us to see how Chinese BRI investment has changed, per country over time. The countries are listed on the x axis in no particular order and the abbreviated country names are used for clarity. By changing the year from 2005 to 2019 we can see once again that certain countries are the real focuses of Chinese investment. "),
+               
+               tags$br(),
+               
                sidebarLayout(
                  sidebarPanel(
                    sliderInput("years", label = h3("Slider"), min = 2005, 
                                max = 2019, value = 1, sep = "")
                  ),
+                 
                  mainPanel(
-                   plotOutput("plot7")
+                   plotOutput("plot7"),
+                   
+                tags$br()
+                   
                  )
                  
                )
@@ -204,9 +230,17 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         
         column(width = 8,
                
+               tags$h1("Top Investment Targets"), 
+               
+               
+               tags$br(),
+               
+               tags$p("To simplify the information further, the graph below shows the top cumulative investment targets for China in 2019. By removing the lower investment target countries, we can see even more clearly where the main BRI investment focus is. This information suggests a few key questions. Generally speaking, what are the effects of BRI investment? Are there any clear trends or tendencies that we can see as a result of BRI? Is there anything apparent in our data that would explain why certain countries receive more funding than others? I attempt to answer these questions in the following panels by examining the economic and political effects of ‘One Belt, One Road’. "),
                
 
-               plotOutput(outputId = "plot8", height = ("600px"))
+               plotOutput(outputId = "plot8", height = ("600px")),
+               
+               tags$br()
                
                
                
@@ -231,7 +265,17 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                
                tags$h1("BRI and GDP"), 
                
+               tags$br(),
+               
+               tags$p("Measuring the real effects of the Belt and Road Initiative is a daunting task and attempts to do so have not been entirely successful. This is not an academic piece and so I am avoiding stringent and nuanced models that attempt to identify a causal variable. This is a descriptive report whose goal is largely descriptive in nature. Therefore, my model is much simpler than an academic model would be. I use GDP PPP (Purchasing Power Parity) from the World Bank to illustrate what relationship, if any, exists between Chinese BRI investment and overall economic health. I do this in two stages. The first is just a scatter plot with a linear regression line written in for a visualization of the relationship, and the second is a linear regression of the effect itself. The first is shown below with both GDP and Foreign Direct reduced to the log10 to avoid the massive difference between GDPs in our countries. "),
+               
+               tags$br(),
+               
                plotOutput(outputId = "plot9", height = ("600px")), 
+               
+               tags$p("As you can see above, the relationship has a positive relationship as demonstrated by the upward slope of the regression line. You can also see, however, that many countries fall outside of our standard errors, which demonstrates that this relationship is not capturing all the variance that exists. How much is not explained in terms of GDP and FDI? That’s more explicitly explained in actual regression shown below. "),
+               
+               tags$p("There are a few things within the linear regression below that are of note. First would be the statistical significance of the results for GDP, which is highly significant. This demonstrates that it is highly unlikely that this relationship exists by chance. Second, the 0. between FDI and GDP is positive in nature and significant considering the log10 of 0.01161 is around 1 million USD. Finally, the adjusted R-squared value of .24 means that only about a quarter of the variance is captured by this regression. While not terrible, this does suggest that many variables exist that explain GDP growth other than BRI investment, which is an intuitive concept. That being said, there is a large portion of this variance that is explained by the GDP and FDI relationship. The directionality is not clear. It seems unlikely that Chinese FDI causes overall economic growth and far more likely that high GDP levels make countries more attractive for investment overall. "), 
                
                verbatimTextOutput(outputId = "plot10")
                
@@ -248,6 +292,12 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         column(width = 2),
         
         column(width = 8,
+               
+               tags$h1("A Closer Look"), 
+               
+               tags$br(),
+               
+               tags$p("The regressions above give insight into this relationship in the large-scale. Viewing the relationship between GDP (PPP) and FDI on a smaller scale is also useful. In the interactive graph below, you can see the relationship between GDP (PPP) and FDI over time per country. Again, I am using the abbreviated country names for clarity’s sake. Of note here are certain outliers that do not fit the relationship at all, such as Japan in East Asia. Japan has the highest GDP of any country in the data, but receives relatively little Chinese investment. This would contradict the concept that GDP is the most predictive factor behind FDI, but one case does not necessarily discount the overall trend. It does suggest that there are other variables that dictate where China invests. "), 
                
                sidebarLayout(
                  sidebarPanel(
@@ -270,6 +320,12 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
         column(width = 2),
         
         column(width = 8,
+               
+               tags$br(),
+               
+               tags$p("Once again it’s useful to isolate the top recipient countries to see clearly which high GDP countries are the main focuses of Chinese investment. This is information is included in the graph below. "), 
+               
+               tags$br(),
                
                plotOutput(outputId = "plot12", height = ("600px")) 
               
