@@ -11,22 +11,11 @@ library(ggrepel)
 library(gganimate)
 library(tidyverse)
 
-plot1 <- read_rds("r_objects/plot1.rds")
-plot2 <- read_rds("r_objects/plot2.rds")
-plot3 <- read_rds("r_objects/plot3.rds")
-plot4 <- read_rds("r_objects/plot4.rds")
-plot5 <- read_rds("r_objects/plot5.rds")
-plot6 <- read_rds("r_objects/plot6.rds")
+
 data7 <- read_rds("r_objects/data7.rds")
-plot8 <- read_rds("r_objects/plot8.rds")
-plot9 <- read_rds("r_objects/plot9.rds")
 linearMod10 <- read_rds("r_objects/linearMod10.rds")
 data11 <- read_rds("r_objects/data11.rds")
-plot12 <- read_rds("r_objects/plot12.rds")
-plot13 <- read_rds("r_objects/plot13.rds")
 linearMod14 <- read_rds("r_objects/linearMod14.rds")
-plot15 <- read_rds("r_objects/plot15.rds")
-plot16 <- read_rds("r_objects/plot16.rds")
 
 ui <- fluidPage(theme = shinytheme("superhero"),
                 
@@ -419,18 +408,79 @@ ui <- fluidPage(theme = shinytheme("superhero"),
 
 )
 server <- function(input, output) {
-  
-    output$plot1 <- renderPlot(plot1)
+    
+  output$plot1 <- renderImage({
+    # When input$n is 3, filename is ./images/image3.jpeg
+    filename <- normalizePath(file.path("./Images",
+                                        paste("plot1.png")))
+    
+    # Return a list containing the filename and alt text
+    list(src = filename,
+         width = 1220,
+         height = 700
+         )
+
+  }, deleteFile = FALSE)
       
-    output$plot2 <- renderPlot(plot2)
+    output$plot2 <- renderImage({
+      
+      filename2 <- normalizePath(file.path("./Images",
+                                          paste("plot2.png")))
+      
+      list(src = filename2,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot3 <- renderPlot(plot3)
+    output$plot3 <- renderImage({
+      
+      filename3 <- normalizePath(file.path("./Images",
+                                          paste("plot3.png")))
+      
+      list(src = filename3,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot4 <- renderPlot(plot4)
+    output$plot4 <- renderImage({
+      
+      filename4 <- normalizePath(file.path("./Images",
+                                           paste("plot4.png")))
+      
+      list(src = filename4,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot5 <- renderPlot(plot5) 
+    output$plot5 <- renderImage({
+      
+      filename5 <- normalizePath(file.path("./Images",
+                                           paste("plot5.png")))
+      
+      list(src = filename5,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE) 
     
-    output$plot6 <- renderPlot(plot6)
+    output$plot6 <- renderImage({
+      
+      filename6 <- normalizePath(file.path("./Images",
+                                           paste("plot6.png")))
+      
+      list(src = filename6,
+           width = 1220,
+           height = 700
+      )
+      
+    }, deleteFile = FALSE)
     
     output$plot7 <- renderPlot({
       # Subset the gapminder data by the chosen years
@@ -449,9 +499,29 @@ server <- function(input, output) {
       
     })
     
-    output$plot8 <- renderPlot(plot8)
+    output$plot8 <- renderImage({
+      
+      filename8 <- normalizePath(file.path("./Images",
+                                           paste("plot8.png")))
+      
+      list(src = filename8,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot9 <- renderPlot(plot9)
+    output$plot9 <- renderImage({
+      
+      filename9 <- normalizePath(file.path("./Images",
+                                           paste("plot9.png")))
+      
+      list(src = filename9,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
     output$plot10 <- renderPrint(
       summary(linearMod10)
@@ -474,17 +544,57 @@ server <- function(input, output) {
       
     })
     
-    output$plot12 <- renderPlot(plot12)
+    output$plot12 <- renderImage({
+      
+      filename12 <- normalizePath(file.path("./Images",
+                                           paste("plot12.png")))
+      
+      list(src = filename12,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot13 <- renderPlot(plot13)
+    output$plot13 <- renderImage({
+      
+      filename13 <- normalizePath(file.path("./Images",
+                                           paste("plot13.png")))
+      
+      list(src = filename13,
+           width = 1220,
+           height = 600
+      )
+      
+    }, deleteFile = FALSE)
     
     output$plot14 <- renderPrint(
       summary(linearMod14) 
     )
     
-    output$plot15 <- renderPlot(plot15)
+    output$plot15 <- renderImage({
+      
+      filename15 <- normalizePath(file.path("./Images",
+                                           paste("plot15.png")))
+      
+      list(src = filename15,
+           width = 900,
+           height = 700
+      )
+      
+    }, deleteFile = FALSE)
     
-    output$plot16 <- renderPlot(plot16)
+    output$plot16 <- renderImage({
+      
+      filename16 <- normalizePath(file.path("./Images",
+                                           paste("plot16.png")))
+      
+      list(src = filename16,
+           width = 900,
+           height = 700
+      )
+      
+    }, deleteFile = FALSE)
 }
 
 

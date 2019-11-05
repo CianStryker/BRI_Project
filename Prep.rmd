@@ -34,7 +34,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot2.png", width = 1200, height = 600)
+png(filename = "plot2.png", width = 1220, height = 600)
 plot(plot2)
 
 dev.off()
@@ -43,7 +43,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot3.png", width = 1200, height = 600)
+png(filename = "plot3.png", width = 1220, height = 600)
 plot(plot3)
 
 dev.off()
@@ -52,7 +52,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot4.png", width = 1200, height = 600)
+png(filename = "plot4.png", width = 1220, height = 600)
 plot(plot4)
 
 dev.off()
@@ -61,7 +61,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot5.png", width = 1200, height = 600)
+png(filename = "plot5.png", width = 1220, height = 600)
 plot(plot5)
 
 dev.off()
@@ -70,7 +70,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot6.png", width = 1200, height = 700)
+png(filename = "plot6.png", width = 1220, height = 700)
 plot(plot6)
 
 dev.off()
@@ -79,7 +79,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot8.png", width = 1200, height = 600)
+png(filename = "plot8.png", width = 1220, height = 600)
 plot(plot8)
 
 dev.off()
@@ -88,7 +88,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot9.png", width = 1200, height = 600)
+png(filename = "plot9.png", width = 1220, height = 600)
 plot(plot9)
 
 dev.off()
@@ -97,7 +97,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot12.png", width = 1200, height = 600)
+png(filename = "plot12.png", width = 1220, height = 600)
 plot(plot12)
 
 dev.off()
@@ -106,7 +106,7 @@ dev.off()
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot13.png", width = 1200, height = 600)
+png(filename = "plot13.png", width = 1220, height = 600)
 plot(plot13)
 
 dev.off()
@@ -129,6 +129,7 @@ plot(plot16)
 
 dev.off()
 ```
+
 ```{r}
 dir_create("BRI_Shiny/r_objects")
 
