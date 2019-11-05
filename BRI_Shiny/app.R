@@ -67,7 +67,11 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(), 
                
-               plotOutput(outputId = "plot2", height = ("600px")) 
+               plotOutput(outputId = "plot2", height = ("600px")),
+               
+               tags$br() 
+               
+               
                
                
         ),
@@ -86,7 +90,11 @@ ui <- fluidPage(theme = shinytheme("superhero"),
              
              tags$p("But how does Chinese FDI differ by region. In looking at the graph below we can see cumulative Chinese FDI each year per region. With this graph the regions China chose to prioritize per year are evident. In the beginning there was little difference between regions in terms of investment, mostly because China was not investing much globally at all. Over time, however, we can see that China began to prioritize investing within a few key regions."), 
              
+             tags$br(), 
+             
              plotOutput(outputId = "plot3", height = ("600px")),
+             
+             tags$br(), 
              
              tags$p("We see that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa received the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence worldwide as many experts believe? Where does the Belt and Road Initiative fit into this picture?"), 
              
