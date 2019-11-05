@@ -464,7 +464,7 @@ server <- function(input, output) {
     
     # Return a list containing the filename and alt text
     list(src = filename,
-         width = 1220,
+         width = 1300,
          height = 700
          )
 
@@ -476,7 +476,7 @@ server <- function(input, output) {
                                           paste("plot2.png")))
       
       list(src = filename2,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -488,7 +488,7 @@ server <- function(input, output) {
                                           paste("plot3.png")))
       
       list(src = filename3,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -500,7 +500,7 @@ server <- function(input, output) {
                                            paste("plot4.png")))
       
       list(src = filename4,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -512,7 +512,7 @@ server <- function(input, output) {
                                            paste("plot5.png")))
       
       list(src = filename5,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -524,7 +524,7 @@ server <- function(input, output) {
                                            paste("plot6.png")))
       
       list(src = filename6,
-           width = 1220,
+           width = 1300,
            height = 700
       )
       
@@ -553,7 +553,7 @@ server <- function(input, output) {
                                            paste("plot8.png")))
       
       list(src = filename8,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -565,7 +565,7 @@ server <- function(input, output) {
                                            paste("plot9.png")))
       
       list(src = filename9,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -598,7 +598,7 @@ server <- function(input, output) {
                                            paste("plot12.png")))
       
       list(src = filename12,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
@@ -610,7 +610,7 @@ server <- function(input, output) {
                                            paste("plot13.png")))
       
       list(src = filename13,
-           width = 1220,
+           width = 1300,
            height = 600
       )
       
