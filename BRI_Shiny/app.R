@@ -19,8 +19,7 @@ linearMod14 <- read_rds("r_objects/linearMod14.rds")
 
 ui <- fluidPage(theme = shinytheme("superhero"),
                 
-                
-    
+
     navbarPage(
         
         title = "China and 'One Belt, One Road'",
@@ -51,13 +50,14 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         
         column(width = 2),
         
+        
         column(width = 8,
                
                tags$h2("Foreign Direct Investment Broadly"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot1", height = ("700px")),
+               imageOutput(outputId = "plot1", width = "100%", height = "110%"),
                
                tags$br(),
                
@@ -67,7 +67,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(), 
                
-               plotOutput(outputId = "plot2", height = ("600px")),
+               imageOutput(outputId = "plot2", width = "100%", height = "100%"),
                
                tags$br() 
                
@@ -92,7 +92,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
              
              tags$br(), 
              
-             plotOutput(outputId = "plot3", height = ("600px")),
+             imageOutput(outputId = "plot3", width = "100%", height = "100%"),
              
              tags$br(), 
              
@@ -118,7 +118,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
              
              tags$br(), 
              
-             plotOutput(outputId = "plot4", height = ("600px")), 
+             imageOutput(outputId = "plot4", width = "100%", height = "100%"), 
              
              tags$br(), 
              
@@ -153,7 +153,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot5", height = ("600px")), 
+               imageOutput(outputId = "plot5", width = "100%", height = "100%"), 
                
                tags$h1("BRI Geographically"), 
                
@@ -161,7 +161,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$p("After dividing the BRI target regions into the sectors of investment, it is important to see geographically where the BRI investment is going. The map below shows where cumulative Chinese investments have gone from 2005 to 2019. It is clear that certain countries are receiving the bulk of the investment. Brazil, Russia, and Pakistan stand out the most from the other countries. Also, interesting to note is that within certain regions there are clear leaders, for example, within Central Asia Kazakhstan is the most popular investment target by China. "), 
                
-               plotOutput(outputId = "plot6", height = ("700px")),
+               imageOutput(outputId = "plot6", width = "100%", height = "110%"),
                
                tags$br()
                
@@ -221,7 +221,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                tags$p("To simplify the information further, the graph below shows the top cumulative investment targets for China in 2019. By removing the lower investment target countries, we can see even more clearly where the main BRI investment focus is. This information suggests a few key questions. Generally speaking, what are the effects of BRI investment? Are there any clear trends or tendencies that we can see as a result of BRI? Is there anything apparent in our data that would explain why certain countries receive more funding than others? I attempt to answer these questions in the following panels by examining the economic and political effects of ‘One Belt, One Road’. "),
                
 
-               plotOutput(outputId = "plot8", height = ("600px")),
+               imageOutput(outputId = "plot8", width = "100%", height = "100%"),
                
                tags$br()
                
@@ -254,13 +254,19 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot9", height = ("600px")), 
+               imageOutput(outputId = "plot9", width = "100%", height = "100%"), 
+               
+               tags$br(),
                
                tags$p("As you can see above, the relationship has a positive relationship as demonstrated by the upward slope of the regression line. You can also see, however, that many countries fall outside of our standard errors, which demonstrates that this relationship is not capturing all the variance that exists. How much is not explained in terms of GDP and FDI? That’s more explicitly explained in actual regression shown below. "),
                
                tags$p("There are a few things within the linear regression below that are of note. First would be the statistical significance of the results for GDP, which is highly significant. This demonstrates that it is highly unlikely that this relationship exists by chance. Second, the 0. between FDI and GDP is positive in nature and significant considering the log10 of 0.01161 is around 1 million USD. Finally, the adjusted R-squared value of .24 means that only about a quarter of the variance is captured by this regression. While not terrible, this does suggest that many variables exist that explain GDP growth other than BRI investment, which is an intuitive concept. That being said, there is a large portion of this variance that is explained by the GDP and FDI relationship. The directionality is not clear. It seems unlikely that Chinese FDI causes overall economic growth and far more likely that high GDP levels make countries more attractive for investment overall. "), 
                
+               tags$br(),
+               
                verbatimTextOutput(outputId = "plot10")
+               
+               
                
 
                
@@ -310,7 +316,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot12", height = ("600px")) 
+               imageOutput(outputId = "plot12", width = "100%", height = "100%") 
               
                
         ),
@@ -341,7 +347,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(),
                
-               plotOutput(outputId = "plot13", height = ("600px")), 
+               imageOutput(outputId = "plot13", width = "100%", height = "100%"), 
                
                tags$br(),
                
@@ -391,7 +397,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         column(width = 6, 
                
                
-               plotOutput(outputId = "plot15", height = ("700px"))
+               imageOutput(outputId = "plot15",  width = "100%", height = "100%")
                
                ),
 
@@ -399,7 +405,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         column(width = 6,
                
 
-               plotOutput(outputId = "plot16", height = ("700px"))
+               imageOutput(outputId = "plot16",  width = "100%", height = "100%")
               
                
               )
@@ -464,8 +470,9 @@ server <- function(input, output) {
     
     # Return a list containing the filename and alt text
     list(src = filename,
-         width = 1300,
-         height = 700
+         contentType = "image/png", 
+         width = "100%",
+         height = "110%"
          )
 
   }, deleteFile = FALSE)
@@ -476,10 +483,10 @@ server <- function(input, output) {
                                           paste("plot2.png")))
       
       list(src = filename2,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
-      
     }, deleteFile = FALSE)
     
     output$plot3 <- renderImage({
@@ -488,8 +495,9 @@ server <- function(input, output) {
                                           paste("plot3.png")))
       
       list(src = filename3,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -500,8 +508,9 @@ server <- function(input, output) {
                                            paste("plot4.png")))
       
       list(src = filename4,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -512,8 +521,9 @@ server <- function(input, output) {
                                            paste("plot5.png")))
       
       list(src = filename5,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "101%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE) 
@@ -524,8 +534,9 @@ server <- function(input, output) {
                                            paste("plot6.png")))
       
       list(src = filename6,
-           width = 1300,
-           height = 700
+           contentType = "image/png", 
+           width = "100%",
+           height = "110%"
       )
       
     }, deleteFile = FALSE)
@@ -553,8 +564,9 @@ server <- function(input, output) {
                                            paste("plot8.png")))
       
       list(src = filename8,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -565,8 +577,9 @@ server <- function(input, output) {
                                            paste("plot9.png")))
       
       list(src = filename9,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -598,8 +611,9 @@ server <- function(input, output) {
                                            paste("plot12.png")))
       
       list(src = filename12,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -610,8 +624,9 @@ server <- function(input, output) {
                                            paste("plot13.png")))
       
       list(src = filename13,
-           width = 1300,
-           height = 600
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -626,8 +641,9 @@ server <- function(input, output) {
                                            paste("plot15.png")))
       
       list(src = filename15,
-           width = 900,
-           height = 700
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
@@ -638,8 +654,9 @@ server <- function(input, output) {
                                            paste("plot16.png")))
       
       list(src = filename16,
-           width = 900,
-           height = 700
+           contentType = "image/png", 
+           width = "100%",
+           height = "100%"
       )
       
     }, deleteFile = FALSE)
