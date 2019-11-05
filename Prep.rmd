@@ -1,0 +1,147 @@
+---
+title: "Prep"
+author: "Cian Stryker"
+date: "11/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(png)
+library(readr)
+library(fs)
+```
+
+```{r}
+getwd()
+```
+
+
+```{r}
+dir_create("BRI_Shiny/Images")
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot1.png")
+plot(plot1)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot2.png", width = 1200, height = 600)
+plot(plot2)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot3.png", width = 1200, height = 600)
+plot(plot3)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot4.png", width = 1200, height = 600)
+plot(plot4)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot5.png", width = 1200, height = 600)
+plot(plot5)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot6.png", width = 1200, height = 700)
+plot(plot6)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot8.png", width = 1200, height = 600)
+plot(plot8)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot9.png", width = 1200, height = 600)
+plot(plot9)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot12.png", width = 1200, height = 600)
+plot(plot12)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot13.png", width = 1200, height = 600)
+plot(plot13)
+
+dev.off()
+```
+
+```{r warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot15.png", width = 900, height = 700)
+plot(plot15)
+
+dev.off()
+```
+
+```{r message=FALSE, warning=FALSE}
+setwd("BRI_Shiny/Images")
+
+png(filename = "plot16.png", width = 900, height = 700)
+plot(plot16)
+
+dev.off()
+```
+```{r}
+dir_create("BRI_Shiny/r_objects")
+
+write_rds(data7, path = "BRI_Shiny/r_objects/data7.rds")
+write_rds(linearMod10, path = "BRI_Shiny/r_objects/linearMod10.rds")
+write_rds(linearMod14, path = "BRI_Shiny/r_objects/linearMod14.rds")
+write_rds(data11, path = "BRI_Shiny/r_objects/data11.rds")
+
+```
+
+
+```{r}
+setwd("~/")
+setwd("BRI_Project")
+```
+
