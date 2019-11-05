@@ -312,7 +312,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$br(),
                
-               tags$p("Once again it’s useful to isolate the top recipient countries to see clearly which high GDP countries are the main focuses of Chinese investment. This is information is included in the graph below. "), 
+               tags$p("Once again, it’s useful to isolate the top recipient countries to see clearly which high GDP countries are the main focuses of Chinese investment. This is information is included in the graph below. There are some interesting outliers here as well. India has the highest GDP (PPP) of any top FDI receiving country but received less investment in comparison to other countries. It is again clear that economic performance is a clear predictive factor behind investment, but not the only predictive measure. An examination of the political preferences of these countries may explain more of the variance. "), 
                
                tags$br(),
                
@@ -339,12 +339,27 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                
                tags$h1("BRI and Political Rights"), 
                
+               tags$br(),
+               
+               tags$p("Measuring the political preferences of regimes is always a daunting and somewhat inaccurate task. There are, however, some data sets that have tried to quantify these preferences. Human Rights Watch has compiled data on the political rights of all countries around the world. The scale exists on a 7-point scale with 1 being the “most free” and 7 being the most illiberal. Obviously, there are some inconsistencies with quantifying the liberal or illiberal nature of a country on a 7-point metric, but for the purposes of this report, this scale demonstrates the broad political preferences the target BRI countries."), 
+               
+               tags$p("The goal of this section of the report is to test the hypothesis China’s ‘One Belt, One Road’ project will have an illiberal effect throughout the BRI regions. China offers a non-western, non-liberal model of development through no strings attached loans. Has the enormous amount of funding invested by China shifted the overall political preferences of target countries over time? Or much like with GDP can we see any clear indications of a preference among Chinese investors for illiberal or liberal countries? The data below explores this topic. "), 
+               
+               tags$br(),
+               
                plotOutput(outputId = "plot13", height = ("600px")), 
                
-               verbatimTextOutput(outputId = "plot14")
-
+               tags$br(),
                
+               tags$p("Above are two box-and-whisker plots that demonstrate the cumulative amount of Chinese foreign direct investment given to countries in each category of political rights: one through seven. The graphs represent this information in 2008 and 2019 respectively. 2008 is used instead of 2005 because in 2005 the amount of Chinese FDI was so low, may political rights categories were not yet represented in the graph. The main takeaways of the graphic above is the lack of any clear pattern in terms of a political rights category. It is not clear that Chinese FDI has generated an overall illiberal shift, but the number of category ‘seven’ countries is much higher in 2019 than in 2008. Considering the fact that investment in category 4 and 2 countries has also improved dramatically, it would be improper to state that any direct relationship exists between Chinese FDI and an illiberal shift. A multi-variant linear regression is preformed below to more rigorously test this visualization. "), 
+              
+               tags$br(), 
                
+               verbatimTextOutput(outputId = "plot14"),
+                
+               tags$br(), 
+               
+               tags$p("The regression above essentially demonstrates the same information from the box-and-whisker plots above. While a positive relationship between GDP and FDI is still apparent, only the political rights category of 1 has a statistically significant negative relationship and even then, it’s weaker at only 0.05. No other category has a significant relationship. This adequately demonstrates that little relationship if any exists between BRI Chinese investment and the political preferences of target countries. Potentially the negative relationship between category 1 countries and FDI signifies the preference of Chinese investors to avoid the most democratic countries within the BRI regions. One thing worth exploring, however, is geographically how did preferences change over time. ")
                
                
         ),
@@ -355,7 +370,32 @@ ui <- fluidPage(theme = shinytheme("superhero"),
       
       fluidRow(
         
+        column(width = 2),
+        
+        column(width = 8, 
+               
+               tags$h1("Global Shifts in Poltical Rights"), 
+               
+               tags$br(),
+               
+               tags$p("Looking at the BRI region countries and their political rights ratings independent of Chinese investment data demonstrates an interesting trend. It is not the case that many liberal countries shifted in an illiberal direction. In fact, the majority of liberal regimes in 2005 stayed at their same ratings through 2018. There is, however, a noticeable increase in category 7 countries from 2005 to 2018, but they are almost always countries that were originally category 6 that simply moved up one more tier to the highest level of illiberalism. Considering there is no relationship between Chinese investment and political preference shift, this data suggests an overall shift of illiberal regimes to become more illiberal during the current era that is caused by completely spurious variables. "), 
+               
+               tags$br()
+               
+               
+        ),
+        
+        
+        column(width = 2)
+               
+        
+        
+      ), 
+      
+      fluidRow(
+        
         column(width = 6, 
+               
                
                plotOutput(outputId = "plot15", height = ("700px"))
                
@@ -372,6 +412,8 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         
 
       )
+      
+      
       
     ),
     
