@@ -25,7 +25,7 @@ dir_create("BRI_Shiny/Images")
 ```{r warning=FALSE}
 setwd("BRI_Shiny/Images")
 
-png(filename = "plot1.png")
+png(filename = "plot1.png", width = 1220, height = 700)
 plot(plot1)
 
 dev.off()
