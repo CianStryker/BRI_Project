@@ -8,84 +8,112 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+# Only loading what I need here. 
+
 library(png)
 library(readr)
 library(fs)
 ```
 
-```{r}
-getwd()
-```
+```{r, Directory Creating}
 
+# I make my Shiny/Images directory here.
 
-```{r}
 dir_create("BRI_Shiny/Images")
 ```
 
-```{r warning=FALSE}
+```{r, Image 1, warning=FALSE, include=FALSE}
+
+# Warning! You're going to see the same
+# code over and over again for a while. 
+# I'm saving my plots from other rmd files as 
+# images and this is the coding langauge I used. 
+# I had to do it individually for each plot though. 
+
+# Note: I use warning=FALSE and include=FALSE
+# because I couldn't figure out how to fix R's
+# issues.
+
+# Step 1 is to set the working directory
+
 setwd("BRI_Shiny/Images")
+
+# Then I create a png file before I load my already 
+# created graph into that file.
 
 png(filename = "plot1.png", width = 1300, height = 700)
 plot(plot1)
 
+# This is the final step to complete the 
+# process. 
+
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 1, warning=FALSE, include=FALSE}
 
+# Round 2
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot2.png", width = 1300, height = 600)
 plot(plot2)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 3, warning=FALSE, include=FALSE}
 
+# Round 3
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot3.png", width = 1300, height = 600)
 plot(plot3)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 4, warning=FALSE, include=FALSE}
 
+# Round 4
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot4.png", width = 1300, height = 600)
 plot(plot4)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 5, warning=FALSE, include=FALSE}
 
+# Round 5
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot5.png", width = 1300, height = 600)
 plot(plot5)
-
 dev.off()
+
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image6, warning=FALSE, include=FALSE}
 
+# Round 6
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot6.png", width = 1300, height = 700)
 plot(plot6)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 7, warning=FALSE, include=FALSE}
 
+# Round 7
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot8.png", width = 1300, height = 600)
 plot(plot8)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
+```{r, Image 8, warning=FALSE}
+
+
 setwd("BRI_Shiny/Images")
 
 png(filename = "plot9.png", width = 1300, height = 600)
@@ -94,44 +122,55 @@ plot(plot9)
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 9, warning=FALSE, include=FALSE}
 
+# Round 8
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot12.png", width = 1300, height = 600)
 plot(plot12)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 10, warning=FALSE, include=FALSE}
 
+#Round 9
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot13.png", width = 1300, height = 600)
 plot(plot13)
-
 dev.off()
 ```
 
-```{r warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 11, warning=FALSE, include=FALSE}
 
+# Round 10
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot15.png", width = 900, height = 700)
 plot(plot15)
-
 dev.off()
 ```
 
-```{r message=FALSE, warning=FALSE}
-setwd("BRI_Shiny/Images")
+```{r, Image 12, warning=FALSE, include=FALSE}
 
+# Round 11
+
+setwd("BRI_Shiny/Images")
 png(filename = "plot16.png", width = 900, height = 700)
 plot(plot16)
-
 dev.off()
 ```
 
-```{r}
+```{r, RDS Section}
+
+# Here I make my r object directory in my shiny app.
+
 dir_create("BRI_Shiny/r_objects")
+
+# Here I'm writing my data sets for the toggle graphs and
+# the linear regressions as rds files to be put in my shiny
+# directory.
 
 write_rds(data7, path = "BRI_Shiny/r_objects/data7.rds")
 write_rds(linearMod10, path = "BRI_Shiny/r_objects/linearMod10.rds")
@@ -142,6 +181,9 @@ write_rds(data11, path = "BRI_Shiny/r_objects/data11.rds")
 
 
 ```{r}
+# This just puts everything back to normal
+# in terms of my working directory.
+
 setwd("~/")
 setwd("BRI_Project")
 ```
