@@ -8,6 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+# So I'm loading in the packages I need for 
+# the third time. 
+
+
 library(readxl)
 library(reshape2)
 library(plyr)
@@ -26,46 +30,80 @@ library(tidyverse)
 ```
 
 ```{r, Chinese FDI Loading, message=FALSE}
+
+# This is just a repeat of the loading code from before, 
+# but I like to keep every rmd page self contained so
+# I added it in again. 
+
 Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
   clean_names()
 
+# Same deal here. I want consistent country names to work between my 
+# three data sets. 
+
 Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
 Chinese_FDI$country2 = Chinese_FDI$country
+
+# Abreviated country names are useful for the last graph in this page. 
 
 Chinese_FDI$country2 <- countrycode(Chinese_FDI$country2, "country.name", "iso2c")
 ```
 
 ```{r, GDP loading, message=FALSE, warning=FALSE}
+
+# Here I'm loading in my GDP data from the World Bank
+
 GDP_An <- read_excel("raw-data/GDP.xls", skip = 2) 
  
+# The data comes in wide form so I use melt
+# to shift it to long form and then I clean
+# up the names
+
 GDP2 <- melt(GDP_An, measure.vars = 2:15) %>%
   clean_names()
+
+# Now I'm cleaning up the column names to make it
+# easier in the future to joins.
 
 colnames(GDP2)[colnames(GDP2) == 'variable'] <- 'year'
 colnames(GDP2)[colnames(GDP2) == 'value'] <- 'GDP_Increase'
 colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
 
+# Time to bring in consistent country names
+
 GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
 GDP2$country2 = GDP2$country
 
+
+# I also want abreviated names too
+
 GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
+
+# Finally I want to drop all 
+# the NA data.
 
 GDP_Final <- na.omit(GDP2)
 ```
 
-```{r, Mapwold loading, warning=FALSE}
+```{r, BRI Effects Data}
 
-map.world <- map_data('world')
-colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
-map.world$country <- countrycode(map.world$country, "country.name", "country.name")
+# This is a busy section, but step 1 is just grabbbing
+# the info I want originally.
 
-```
-
-```{r}
 test99 <- Chinese_FDI %>%
   select("country2", "region", "quantity_in_millions", "year") 
 
-test29 <- aggregate(quantity_in_millions ~ country2 + region + year, data = test99, FUN = sum)
+# Now I aggregate again on the variables that matter.
+
+test29 <- aggregate(quantity_in_millions ~ country2 
+                    + region 
+                    + year, 
+                    data = test99, 
+                    FUN = sum)
+
+# Followed by the typical nest, arrange, grouping, 
+# finding the cummulative amount, before I put FDI
+# in a more logical format. 
 
 test39 <- test29 %>%
   complete(year, nesting(country2, region), fill = list(quantity_in_millions=0)) %>%
@@ -74,9 +112,10 @@ test39 <- test29 %>%
   mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum4 * 1000000) 
 
-test48 <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
-  mutate(log_ycum = log10(FDI)) %>%
-  mutate(log_GDP = log10(GDP_Increase)) 
+# The first thing I do here is merge this data with my GDP data. 
+# Then I filter for just 2018, and GDP below a certain point. 
+# I do this because the U.S. was essentially ruining my graph.
+# I also find the log10s of my data so the graphing makes sense. 
 
 FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   filter(year == 2018) %>%
@@ -85,6 +124,9 @@ FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
   filter(log_ycum >= 0) %>%
   mutate(log_GDP = log10(GDP_Increase)) %>%
   mutate(GDP = GDP_Increase)
+
+# Finally, here's my plot that shows the scatter of GDP and FDI
+# with a regression line included for better visualization. 
 
 plot9 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
    geom_jitter() +
@@ -96,17 +138,33 @@ plot9 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
    geom_smooth(method = "lm") 
 ```
 
-```{r render = 'normal_print'}
+```{r, BRI GDP Regression}
+
+# Here's my regression as well. 
+
 linearMod10 <- lm(FDI ~ GDP, data=FDI_GDP)  
 ```
 
 ```{r, BRI and GDP Scatter Plot }
+
+# Alright here I want data for my toggle graph so
+# I grab what I want and filter for the BRI regions. 
+
 test <- Chinese_FDI %>%
   select("country2", "quantity_in_millions", "year","sector", "region") %>%
-  filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Sub-Saharan Africa", "West Asia")) %>%
+  filter(region %in% c("Arab Middle East and North Africa",
+                       "East Asia", "South America", 
+                       "Sub-Saharan Africa", 
+                       "West Asia")) %>%
   filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) 
 
+# Now I aggregate as per usual.
+
 test2 <- aggregate(quantity_in_millions ~ country2 + year + region, data = test, FUN = sum)
+
+# Then it's my typical nest, arrange, and mutate combination
+# to find the cummulative amount and then to put FDI
+# in its proper numerical format.
 
 test3 <- test2 %>%
   complete(year, nesting(country2, region), fill = list(quantity_in_millions=0)) %>%
@@ -115,31 +173,26 @@ test3 <- test2 %>%
   mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum4 * 1000000)
 
+# I then merge this data with the GDP data to create 
+# the data I will load into shiny for my toggle graph. 
+
 data11 <- merge(test3, GDP_Final, by = c("year", "country2")) 
 ```
 
-```{r}
-plot11 <- ggplot(data11, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
-  geom_point() +
-  geom_text(data = subset(data11, FDI > 3e+10 | GDP_Increase > 1e+12), aes(label = country2, hjust = 0, vjust = -1.3)) +
-  labs(x= "BRI Chinese FDI (in Billions USD)",
-       y= "GDP PPP (in Billions USD)",
-       fill=NULL,
-       title="GDP and FDI") +
-  guides(size = FALSE, color = FALSE) +
-  facet_wrap(~region) +
-  expand_limits(y = 6e+12)
-```
+```{r, BRI Effects Final Graph}
 
-```{r}
+# Now I'm ungrouping and filtering for 2018
+# and only my top FDI recieving countries
+# before I select what I need.
+
 ohnoo <- data11 %>%
   ungroup() %>%
   filter(year == 2018) %>%
   filter(FDI >= 1.5e+10) %>%
   select("year", "region", "country", "FDI", "GDP_Increase")
 
-
-
+# Then I create my final plot using ggrepel to make
+# visually pleasing labels for my countries.
 
 plot12 <- ggplot(ohnoo, aes(x = FDI, color = region, y = GDP_Increase)) +
   geom_point() +

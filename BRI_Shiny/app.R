@@ -427,6 +427,27 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         
         column(width = 6,
                
+               tags$h1("Author's Remarks"),
+               
+               tags$br(), 
+               
+               HTML('<iframe width="100%" height="500" src="https://www.youtube.com/embed/mjfOeLQG9-M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'),
+               
+               tags$br()
+                          
+               
+               
+        ),
+        
+        column(width= 3)
+      ),
+      
+      fluidRow(
+        
+        column(width = 3),
+        
+        column(width = 6,
+               
                tags$h1("Conclusion"),
                
                tags$p("The purpose of this report was not to identify any causal impact of Chinese Direct Investment or the Belt and Road Initiative overall. That is task that requires much more precise models and more data than is realistically available at this point. The purpose was to describe in broad terms the scope of Chinese FDI and if any broad economic or political trends are visible due to this large-scale investment increase. China’s economic growth has been shocking and its growing role in international relations dictates that its activities should be better understood and analyzed. This report will hopefully serve as a clear introduction to this phenomenon. "), 

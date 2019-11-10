@@ -8,7 +8,8 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
-#Here I'm just loading everything I'll need for the first page. My goal is to make my first page an overall examination of Chinese FDI and then slowly build into a discussion of BRI, which I'll explore more indepthyly on the second page. I need alot of loading packages and then also data managment packages. Here countrycode and maps are very important. 
+# Here I'm just loading everything
+# I'll need for the first page. 
 
 library(readxl)
 library(reshape2)
@@ -28,28 +29,25 @@ library(gganimate)
 library(tidyverse)
 ```
 
-## China and "One Belt, One Road"
 
-In this app I will demonstrate the tremendous growth of Chinese Direct Foreign Investment and specifically, the use of FDI in the Belt and Road Initiative. Then I will go on to demonstrate the possible effects of this initiative in terms of ecnomic growth and the political attitudes of recipient regimes. 
-
-# Chinese Investment
-
-There is a consensus among experts that with the dissolution of the USSR in 1991, the world became unipolar with the United States enjoying a near total global hegemony in both political and ecnonomic terms. The explosive economic growth of China, however, from the early 2000's to now, has challenged this concept and shifted public opinion to recognize the advent of a multi-polar world. A major goal of China during this period has been domestic economic growth, but as its economy imporved drastically, so did China's investment in foreign countries. Considering the Chinese Government's economic model, the relationship between private firms and the Communist party is closure than in most other countries. Examining China's Foreign Direct Investment, therefore gives insight into the Chinese government's overall geopolitical goals. This is especially true with the announcment of the "One Belt, One Road" project in 2014, where Xi made it clear that China was interested in recreating the Silk Road. This ambitous infastrucutral investing project is mostly targetted towards developing regions such as West Asia, the Middle East, Sub-Saharan Africa, and South America. Many experts believe that this initiative, the Belt and Road Initiative, is actually an ambitious attempt to win political influence and capture emerging markets in vital areas neglected by the U.S. with the ultimate goal of shifting the economic center of the world from New York City to Beijing. 
 ```{r, First loading chunk, message=FALSE}
 
-#My main source of Data is this FDI data. For the purposes of my about page, I only use this data set and the map data set. I do an examination of economic and political effects of Chinese FDI on a later page. So on page 2 and eventually 3, I'll use two other data sets. That is not the goal of the first page. Of note here is just that I clean up the names and skip the first 4 junk lines. 
+# Here I'm loading in my main data source for the project.
+# I clean up a littel by using clean names and skipping lines.
 
 Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
   clean_names()
 
-#I use multiple data sets that rely on continuity between country names, so I'm using the countrycode package to make sure each data set is uniform in its country names. Here I'm just using the package to shift the country column over to the uniform system used in country code. 
+# This is important for getting a consistent country name list. 
+# I use the countrycode package to pull this off. 
 
 Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
 ```
 
 ```{r, Second loading chunk, warning=FALSE}
 
-#I thought it would be really cool to use a map to represent changes in data since my topic is very much global and geopolitical. I eventually found this really awesome maps package to do just that! It's a package though so I download the dataset that includes global map data that includes longitude and latitude data. I have to make it consistent though so I use the countrycode package to make the country names uniform. This lets me combine it with my Chinese FDI data. 
+# To make my map grpahic I need to use the maps packages. 
+# I make the r object, clean up the names, and make them consistent. 
 
 map.world <- map_data('world')
 colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
@@ -59,16 +57,19 @@ map.world$country <- countrycode(map.world$country, "country.name", "country.nam
 
 ```{r, First setup chunk, warning=FALSE}
 
-#Here's my first thing I want people to see. I want to find the cumulative amount of Chinese FDI per year. So I grab what I need first in terms of variables. 
+# Here's my first thing I want people to see. I want to find the cumulative amount
+# of Chinese FDI per year. So I grab what I need first in terms of variables. 
 
 China_test <- Chinese_FDI %>%
   select("year", `quantity_in_millions`, "country")
 
-#Not its an aggregate function to find the total amount of FDI per year and country.
+# Not its an aggregate function to find the total amount of FDI per year and country.
   
 China_test1 <- aggregate(quantity_in_millions ~ country + year, data = China_test, FUN = sum)
 
-#Not I calculate the cumulative amount per year. I've used this function before so I'm comfortable with it. I do specify that I just want the cumulative FDI in 2019 to represent total investment, per country, from 2005 until now. 
+# Not I calculate the cumulative amount per year. I've used this function before so 
+# I'm comfortable with it. I do specify that I just want the cumulative FDI in 2019
+# to represent total investment, per country, from 2005 until now. 
 
 China_test2 <- China_test1 %>%
   complete(year, nesting(country), fill = list(quantity_in_millions=0)) %>%
@@ -78,14 +79,23 @@ China_test2 <- China_test1 %>%
   mutate(y_cum4x = y_cum4 * 1000000) %>%
   filter(year == 2019)
 
-#Here I'm just merging my map.world data with my FDI data. Left join does exactly what I want so I use it. Maybe I could've used merge, but here I thought left_join was more appropriate. I join the two on the "country" column which is now uniform. 
+# Here I'm just merging my map.world data with my FDI data. Left join does exactly what
+# I want so I use it. Maybe I could've used merge, but here I thought left_join was more 
+# appropriate. I join the two on the "country" column which is now uniform. 
 
 workss <- left_join(map.world, China_test2, by = c("country"))
 ```
-## Foreign Direct Investment Broadly
+
 ```{r, Maping chunk}
 
-#Here is my map code chunk! This was pretty difficult, but essentially its ggplot with a ton of details thrown in. I had to go to Stackoverflow to get a template and then tweak it to make it my own. Using the combined data from before I can fill in the data per country across the globe. Super cool. I tweak the values for the legend and colors. I also tweak the colors to make it more logical and recognizable for the reader. Hmm... I also add in some aesthetic choices such as labels, removing tick marks, and adding in a source label. Feel free to critique but I really like this and I want to use it alot for different stages of my project.
+# Here is my map code chunk! This was pretty difficult, but essentially its ggplot
+# with a ton of details thrown in. I had to go to Stackoverflow to get a 
+# template and then tweak it to make it my own. Using the combined data from
+# before I can fill in the data per country across the globe. Super cool. I tweak
+# the values for the legend and colors. I also tweak the colors to make it more logical
+# and recognizable for the reader. Hmm... I also add in some aesthetic choices such as
+# labels, removing tick marks, and adding in a source label. Feel free to critique but
+# I really like this and I want to use it alot for different stages of my project.
 
 plot1 <- ggplot(workss, aes( x = long, y = lat, group = group )) +
   geom_polygon(aes(fill = y_cum4x)) +
@@ -97,44 +107,42 @@ plot1 <- ggplot(workss, aes( x = long, y = lat, group = group )) +
                        ) +
   labs(fill = 'Commulative FDI
 in USD'
-       ,title = 'Commulative Chinese Foreign Direct Investment by Country'
-       ,subtitle = '2019'
-       ,x = NULL
-       ,y = NULL) +
-  theme(text = element_text(color = '#333333')
-        ,plot.title = element_text(size = 18)
-        ,plot.subtitle = element_text(size = 14)
-        ,axis.ticks = element_blank()
-        ,axis.text = element_blank()
-        ,panel.grid = element_blank()
-        ,plot.background = element_rect(fill = '#CCCCCC')
-        ,legend.position = c(.18,.36)
-        ,legend.background = element_rect(fill = '#CCCCCC')
-        ,legend.key = element_blank()
+       title = 'Commulative Chinese Foreign Direct Investment by Country',
+       subtitle = '2019',
+       x = NULL,
+       y = NULL) +
+  theme(text = element_text(color = '#333333'),
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 14),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = '#CCCCCC'),
+        legend.position = c(.18,.36),
+        legend.background = element_rect(fill = '#CCCCCC'),
+        legend.key = element_blank()
         ) +
-  annotate(geom = 'text'
-           ,label = 'Source: The American Enterprise Institute and The Heritage Foundation'
-           ,x = 14, y = -55
-           ,size = 3
-           ,color = '#333333'
-           ,hjust = 'left'
+  annotate(geom = 'text',
+           label = 'Source: The American Enterprise Institute and The Heritage Foundation',
+           x = 14, y = -55,
+           size = 3,
+           color = '#333333',
+           hjust = 'left'
            )
 
 ```
 
-
-The American Enterprise Institute and Heritage Foundation has recorded almost every single Chinese Foreign Direct Investment since 2005 to now. The cummulative results of which can be seen in the world map above.  The important note here is to see that China has invested in almost every single country in the world, but a truly massive amount in the U.S. and a few other key states.
-
-Below, however, is the culmination of all investments China has made per year. It demonstrates the staggering increase in FDI from 2005 to now. This increase in FDI closely coorelates to China's overall GDP increase in this time frame. It is clear that as China' economy became stronger and stronger, it chose to invest more and more globally.
-
-
-
 ```{r, overall bar chart, message=FALSE}
+
+# Here I'm creating a new data set and aggregating what I need. 
+# Also I'm putting the FDI in the proper numeric form
 
 China_simple_1 <- aggregate(quantity_in_millions ~ year, data = Chinese_FDI, FUN = sum) %>%
   mutate(FDI = quantity_in_millions * 1000000)
 
-#This is just a simple ggplot bar graph to show how much FDI has increased since 2005. Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was necessary to get too fancy with this beyond labels.
+# This is just a simple ggplot bar graph to show how much FDI has increased since 2005.
+# Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was 
+# necessary to get too fancy with this beyond labels.
 
 plot2 <- ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
   guides(fill = FALSE) +
@@ -148,23 +156,24 @@ plot2 <- ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
 ```
 
 
-## Chinese FDI per Region
-
-But how does Chinese FDI differ by region. In looking at the graph below we can see cummulative Chinese FDI each year per region. With it,  the regions China chose to prioritize per year are evident. In the beginning there was little difference between regions in terms of investment, mostly due to the fact that China was not investing much globally at all. Over time, however, we can see that China began to prioritize investing within a few key regions. 
-
-
 ```{r, Line graph setup and graph}
 
-# Same deal as before but now I want to show has this FDI has differed between regions. So I grab what I need to start, which now includes region annd country. 
+# Same deal as before but now I want to show has this FDI has 
+# differed between regions. So I grab what I need to start, which now includes region annd country. 
 
 China <- Chinese_FDI %>%
   select("year", `quantity_in_millions`, "country", "region") 
 
-#Now I'm aggregating again but based of my new variables.
+# Now I'm aggregating again but based of my new variables.
   
-China_1 <- aggregate(quantity_in_millions ~ country + year + region, data = Chinese_FDI, FUN = sum)
+China_1 <- aggregate(quantity_in_millions ~ country 
+                     + year 
+                     + region, 
+                     data = Chinese_FDI, 
+                     FUN = sum)
 
-#This is another cummulative calculation. I find the cummulative data to be more illustrative of FDI effects than just yearly investment. 
+# This is another cummulative calculation. I find the cummulative data to be more 
+# illustrative of FDI effects than just yearly investment. 
 
 China_1x <- China_1 %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
@@ -172,12 +181,16 @@ China_1x <- China_1 %>%
   group_by(region, country) %>%
   mutate(y_cum = cumsum(quantity_in_millions))
 
-#Here I have to re-aggregate the data to make it work for my line chart. So I do that.
+# Here I have to re-aggregate the data to make it work for my line chart. So I do that.
 
 China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum) %>%
   mutate(FDI = y_cum *1000000)
 
-#Finally this is just a simple line chart that shows how investment has changed overtime. I originally had an animated bar chart, but I think this is a much better representation. I add in some detail work like labels and reorder my x axis. Note: My data treats the US and North American separate. I actually like this because it really shows how much investment goes into the US, so I kept it separate as well.
+# Finally this is just a simple line chart that shows how investment has changed overtime. 
+# I originally had an animated bar chart, but I think this is a much better representation.
+# I add in some detail work like labels and reorder my x axis. Note: My data treats 
+# the US and North American separate. I actually like this because it really shows
+# how much investment goes into the US, so I kept it separate as well.
 
 plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
   geom_line(aes(linetype= "dash", color= region)) +
@@ -196,27 +209,30 @@ plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
 ```
 
 
-This next graph displays commulative Chinese FDI in 2019, so the total sum of all FDI since 2005. It shows that in general the bulk of Chinese Direct Foreign Investment went to Europe, North America, and specifically the US. To demonstrate the enormity of Chinese FDI in the U.S., the United States has been separated from North America. While Europe, East Asia, West Asia, and Sub-Saharan Africa recieved the most Chinese FDI, the U.S. by itself comes in fifth place, more than all investment made into all of South America for example. If the bulk of Chinese investment flows into Europe and North America though, does this really mean that China is winning political influence world wide as many experts believe? Where does the Belt and Road Initiative fit into this picture? 
-
-
-## "One Belt, One Road"
-
-The Belt and Road initiative is not immediatley apparent when we view Chinese FDI in its totality. This is because the BRI is an investment and political strategy based on a few key, typically infastructural, sectors. Namely through the BRI the Chinese government wants to invest heavily in construction (i.e. real estate within our graph), energy, metals, and transportation. These are the sectors that China believes will facillitate the creation of a New Silk Road that will tie all of Africa, the Middle East, Asia, and potentiall even South America to Beijing. In investing in these areas, often with the help of attractive soft loans, China allows these developing countries to improve their infastructures, access their resources, and improve their connection to the world economy vis-a-vi China. In return, however, they assume massive amounts of debt to China and China gains almost sole access to the emerging markets it helped develop. This economic and political dependency is what is in line with the overall geopolitical fears regarding BRI. 
-
 ```{r, BRI Chunk}
 
-#So I want to explore Chinese FDI specific to the Belt and Road Initiative. I plan to do this primarily in my second page, but like a paper, it's good to have a transition. So here I want to show how the regional division of FDI changes drastically when we examine certain investment sectors. So Igrab what I want in term of variables adn then filter for only the investment sectors that are BRI specific and also only BRI target areas plus Europe and the US to demonstrate the new divisions.
+# Here I want to isolate the BRI areas so grab what I want in term of variables
+# and then filter for only the investment sectors that are BRI specific 
+# and also only BRI target areas plus Europe and the US to demonstrate the new divisions.
 
 China_sector <- Chinese_FDI %>%
     select("country", "region", "year", "sector", "quantity_in_millions") %>%
     filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
-    filter(region %in% c("Arab Middle East and North Africa", "East Asia", "South America", "Europe", "USA", "Sub-Saharan Africa", "West Asia")) 
+    filter(region %in% c("Arab Middle East and North Africa",
+                         "East Asia", "South America", "Europe", 
+                         "USA", 
+                         "Sub-Saharan Africa", 
+                         "West Asia")) 
 
-#Another aggregate chunk but now on country, year, region, and sector. Nothing crazy though.
+# Another aggregate chunk but now on country, year, region, and sector. Nothing crazy though.
   
-China_sector1 <- aggregate(quantity_in_millions ~ country + year + region + sector, data = China_sector, FUN = sum)
+China_sector1 <- aggregate(quantity_in_millions ~ country + year 
+                           + region 
+                           + sector, 
+                           data = China_sector, 
+                           FUN = sum)
 
-#You've never seen this before huh? Yeah it's another cummulative calculation. 
+# You've never seen this before huh? Yeah it's another cummulative calculation. 
 
 China_sector2 <- China_sector1 %>%
   complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
@@ -225,7 +241,10 @@ China_sector2 <- China_sector1 %>%
   mutate(y_cum2 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum2 * 1000000)
 
-#Here I just was the data for the year 2019. When I was adding into my previous bit of code it seemed to create issues so I just did it separately. Some issues are just not worth the time in my opinion if they can be handled quickly in a simpler, if less elegant, way. 
+# Here I just was the data for the year 2019. When I was adding into my previous bit
+# of code it seemed to create issues so I just did it separately. Some issues are 
+# just not worth the time in my opinion if they can be handled quickly
+# in a simpler, if less elegant, way. 
 
 China_sector3 <- China_sector2 %>%
     filter(year == 2019)
@@ -237,7 +256,12 @@ w <-aggregate(FDI ~ region + year, data = China_sector2, FUN = sum) %>%
 
 ```{r}
 
-#This is essentially a simple bar chart, but I've added in enough facet wraps to really demonstrate how it differs per region. Also I show the different sectors on the x axis. It's a little cluttered, but I think it's important to show each region here. Later, I'll simplify my graphics to show only BRI regions, but here I think adding in Europe and the US really show how depending on which FDI sectors we look at, the division of investment differs dramatically. 
+# This is essentially a simple bar chart, but I've added in enough facet wraps to
+# really demonstrate how it differs per region. Also I show the different sectors
+# on the x axis. It's a little cluttered, but I think it's important to show each 
+# region here. Later, I'll simplify my graphics to show only BRI regions, but here 
+# I think adding in Europe and the US really show how depending on which FDI sectors
+# we look at, the division of investment differs dramatically. 
 
 plot4 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
   geom_line(aes(linetype= "dash", color= region)) +
@@ -254,9 +278,3 @@ plot4 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
   guides(linetype = FALSE) 
   
 ```
-## "One Belt, One Road"
-
-Of note with the Graph above is that when we only look at the key infastrucutral sectors that comprise BRI's focus, it is clear that the four target regions of West Asia, the Middle East, Sub-Saharan Africa, and South America, recieve far more funding than Europe or the U.S. This also suggests that a closure examination of these four target regions would aid in understanding the One Belt, One Road project as a whole. 
-
-
-
