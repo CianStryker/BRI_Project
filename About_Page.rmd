@@ -32,6 +32,9 @@ library(tidyverse)
 
 ```{r, First loading chunk, message=FALSE}
 
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
+
 # Here I'm loading in my main data source for the project.
 # I clean up a littel by using clean names and skipping lines.
 
@@ -46,6 +49,9 @@ Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country
 
 ```{r, Second loading chunk, warning=FALSE}
 
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
 # To make my map grpahic I need to use the maps packages. 
 # I make the r object, clean up the names, and make them consistent. 
 
@@ -56,6 +62,9 @@ map.world$country <- countrycode(map.world$country, "country.name", "country.nam
 ```
 
 ```{r, First setup chunk, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
 
 # Here's my first thing I want people to see. I want to find the cumulative amount
 # of Chinese FDI per year. So I grab what I need first in terms of variables. 
@@ -106,7 +115,7 @@ plot1 <- ggplot(workss, aes( x = long, y = lat, group = group )) +
               
                        ) +
   labs(fill = 'Commulative FDI
-in USD'
+in USD',
        title = 'Commulative Chinese Foreign Direct Investment by Country',
        subtitle = '2019',
        x = NULL,
@@ -133,6 +142,9 @@ in USD'
 ```
 
 ```{r, overall bar chart, message=FALSE}
+
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
 
 # Here I'm creating a new data set and aggregating what I need. 
 # Also I'm putting the FDI in the proper numeric form
@@ -254,7 +266,7 @@ w <-aggregate(FDI ~ region + year, data = China_sector2, FUN = sum) %>%
   
 ```
 
-```{r}
+```{r, Last plot for About}
 
 # This is essentially a simple bar chart, but I've added in enough facet wraps to
 # really demonstrate how it differs per region. Also I show the different sectors

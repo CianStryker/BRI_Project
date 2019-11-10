@@ -29,6 +29,9 @@ library(tidyverse)
 
 ```{r, Chinese FDI Loading, message=FALSE}
 
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
+
 # This is the data I need again and I'm just cleaning it up for work.
 
 Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
@@ -45,6 +48,9 @@ Chinese_FDI$country2 <- countrycode(Chinese_FDI$country2, "country.name", "iso2c
 ```
 
 ```{r, Mapwold loading, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
 
 # The map packages is great and I'm using it again on this tab.
 # I'm also renaiming columns to make life easier. 
@@ -143,6 +149,10 @@ workss2 <- left_join(map.world, trial, by = c("country"))
 ``` 
 
 ```{r, Map 2 only Target Reion, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
 
 # This is just another world map chunk. It's essentially a lot of detail work
 # but I explained most of it in the 'About_Page' so see those comments for
