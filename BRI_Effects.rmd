@@ -136,7 +136,7 @@ FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
 
 plot9 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
    geom_jitter() +
-  labs(x= "Cummulative Chinese FDI (in Billions USD)",
+  labs(x= "Cumulative Chinese FDI (in Billions USD)",
        y= "GDP PPP (in Billions USD)",
        fill=NULL,
        title= "Regression of All Chinese FDI Recipient Countries: 2018") +
