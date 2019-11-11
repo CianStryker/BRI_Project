@@ -226,7 +226,7 @@ plot_1 <- ggplot(x7, aes(x = PR,  y = log_ycum5, fill = PR)) +
                      labels = c(8, 8.5, 9, 9.5, 10, 10.5, 11)) +
   guides(fill = FALSE) +
 labs(x= "Political Rights",
-       y="BRI Chinese FDI (in Billions USD)",
+       y="Cumulative Chinese BRI Investment (in Billions USD)",
        fill=NULL,
        title= "Politcal Rights in 2008",
      subtitle = "BRI Investment per Category")

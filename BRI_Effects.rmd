@@ -215,6 +215,3 @@ plot12 <- ggplot(ohnoo, aes(x = FDI, color = region, y = GDP_Increase)) +
   facet_wrap(~region) +
   expand_limits(y = 3e+12)
 ```
-
-
-
