@@ -1,3 +1,4 @@
+#Loading all necessary packages.
 
 library(shiny)
 library(maps)
@@ -11,15 +12,21 @@ library(ggrepel)
 library(gganimate)
 library(tidyverse)
 
+# Here I'm loading in my data for the slider graphs
+# and the linear regressions as rds objects. 
 
 data7 <- read_rds("r_objects/data7.rds")
 linearMod10 <- read_rds("r_objects/linearMod10.rds")
 data11 <- read_rds("r_objects/data11.rds")
 linearMod14 <- read_rds("r_objects/linearMod14.rds")
 
+# Here's the start to the ui. I use the 
+# superhero theme because dark mode is cool. 
+
 ui <- fluidPage(theme = shinytheme("superhero"),
                 
-
+    # Here we go with the overall title. 
+    
     navbarPage(
         
         title = "China and 'One Belt, One Road'",
@@ -27,6 +34,14 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         tabPanel(
             
             title = "China as a Global Economic Superpower",
+    
+    # I use fluidRows to keep everything neat and tidy. 
+    # Every section in my ui is just a collection of text, graphs, 
+    # a video, linear regressions, and two calls to ggplot functions
+    # within my server section. Everything follows the exact same
+    # flow though. fluidRow, column for left hand margin, center column
+    # that includes text and other stuff, and then right column for the 
+    # other margin. 
     
     fluidRow(
         
@@ -46,6 +61,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
         
     ),
   
+    
     fluidRow(
         
         column(width = 2),
@@ -482,22 +498,36 @@ ui <- fluidPage(theme = shinytheme("superhero"),
   )
 
 )
+
+# Here's my server section. 
+
 server <- function(input, output) {
     
+  # Here I'm just calling an image in that I've stored locally. 
+  
   output$plot1 <- renderImage({
-    # When input$n is 3, filename is ./images/image3.jpeg
+    
+    # Calling my file from local storage in Shiny.
+    
     filename <- normalizePath(file.path("./Images",
                                         paste("plot1.png")))
     
-    # Return a list containing the filename and alt text
+    # Return a list containing the filename and alt text.
+    
     list(src = filename,
          contentType = "image/png", 
          width = "100%",
          height = "110%"
          )
 
+    # Here I make sure to not delete that file.
+    
   }, deleteFile = FALSE)
       
+  
+  
+   # Here I'm just calling an image in that I've stored locally. 
+  
     output$plot2 <- renderImage({
       
       filename2 <- normalizePath(file.path("./Images",
@@ -509,6 +539,9 @@ server <- function(input, output) {
            height = "100%"
       )
     }, deleteFile = FALSE)
+    
+    # Here I'm just calling an image in that I've stored locally. 
+    
     
     output$plot3 <- renderImage({
       
@@ -523,6 +556,9 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE)
     
+    # Here I'm just calling an image in that I've stored locally. 
+    
+    
     output$plot4 <- renderImage({
       
       filename4 <- normalizePath(file.path("./Images",
@@ -535,6 +571,9 @@ server <- function(input, output) {
       )
       
     }, deleteFile = FALSE)
+    
+    
+    # Here I'm just calling an image in that I've stored locally. 
     
     output$plot5 <- renderImage({
       
@@ -549,6 +588,8 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE) 
     
+    # Here I'm just calling an image in that I've stored locally. 
+    
     output$plot6 <- renderImage({
       
       filename6 <- normalizePath(file.path("./Images",
@@ -562,10 +603,18 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE)
     
+    # Heres the first toggle graph. This is actually different. 
+    
     output$plot7 <- renderPlot({
-      # Subset the gapminder data by the chosen years
+      
+      # First I subset the data I preloaded by the years.
+      
       trial3 <- subset(data7,
                        year == input$years[1])
+      
+      # Here I just put in the ggplot code I originally had in the rmd file. 
+      # Nothing crazy here. Just a buch of detail work that'll make it look cool.
+      # Oh, I did make it so that labels pop up for only certain countries. 
       
       ggplot(trial3, aes(x = country2, y = FDI, size = FDI, color = region)) +
         geom_point()+
@@ -578,6 +627,9 @@ server <- function(input, output) {
       
       
     })
+    
+    
+    # Here I'm just calling an image in that I've stored locally. 
     
     output$plot8 <- renderImage({
       
@@ -592,6 +644,8 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE)
     
+    # Here I'm just calling an image in that I've stored locally. 
+    
     output$plot9 <- renderImage({
       
       filename9 <- normalizePath(file.path("./Images",
@@ -605,13 +659,23 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE)
     
+    # I'm literally just running summary on my regression.
+    
     output$plot10 <- renderPrint(
       summary(linearMod10)
     )
     
+    # Toggle graph time. 
+    
     output$plot11 <- renderPlot({
       ohno <- subset(data11,
                        year == input$years2[1])
+      
+      
+      # Here I just put in the ggplot code I originally had in the rmd file again. 
+      # Nothing crazy here again. Just a buch of detail work that'll make it look cool.
+      # Oh, I did make it so that labels pop up for only certain countries with 
+      # higher gdps. 
       
       ggplot(ohno, aes(x = FDI, size = FDI, color = region, y = GDP_Increase)) +
         geom_jitter() +
@@ -626,6 +690,8 @@ server <- function(input, output) {
       
     })
     
+    # Here I'm just calling an image in that I've stored locally. 
+    
     output$plot12 <- renderImage({
       
       filename12 <- normalizePath(file.path("./Images",
@@ -638,6 +704,8 @@ server <- function(input, output) {
       )
       
     }, deleteFile = FALSE)
+    
+    # Here I'm just calling an image in that I've stored locally. 
     
     output$plot13 <- renderImage({
       
@@ -652,9 +720,14 @@ server <- function(input, output) {
       
     }, deleteFile = FALSE)
     
+    # Here I'm just calling an image in that I've stored locally. 
+    
     output$plot14 <- renderPrint(
       summary(linearMod14) 
     )
+    
+    
+    # Here I'm just calling an image in that I've stored locally. 
     
     output$plot15 <- renderImage({
       
@@ -668,6 +741,9 @@ server <- function(input, output) {
       )
       
     }, deleteFile = FALSE)
+    
+    
+    # Here I'm just calling an image in that I've stored locally. 
     
     output$plot16 <- renderImage({
       

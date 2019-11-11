@@ -111,7 +111,7 @@ plot(plot8)
 dev.off()
 ```
 
-```{r, Image 8, warning=FALSE}
+```{r, Image 8, warning=FALSE, include=FALSE}
 
 
 setwd("BRI_Shiny/Images")
@@ -180,7 +180,8 @@ write_rds(data11, path = "BRI_Shiny/r_objects/data11.rds")
 ```
 
 
-```{r}
+```{r, Finish Directory, include=FALSE}
+
 # This just puts everything back to normal
 # in terms of my working directory.
 
