@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = FALSE)
 # So I'm loading in the packages I need for 
 # the third time. 
 
-
 library(readxl)
 library(reshape2)
 library(plyr)

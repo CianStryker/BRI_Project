@@ -474,11 +474,11 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$p("The data sets for the project are the following:"), 
                                    
-                                   tags$p("American Enterprise Foundation’s Global Investment Tracker: https://www.aei.org/china-global-investment-tracker/"), 
+                                   tags$p("American Enterprise Foundation’s Global Investment Tracker:", a(href = "https://www.aei.org/china-global-investment-tracker/", "https://www.aei.org/china-global-investment-tracker/")), 
                                    
-                                   tags$p("The World Bank’s GDP (PPP) Data: https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD"), 
+                                   tags$p("The World Bank’s GDP (PPP) Data:", a(href = 'https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD', 'https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD')), 
                                    
-                                   tags$p("Freedom House’s Political Rights Index: https://freedomhouse.org/report/freedom-world/freedom-world-2018"),
+                                   tags$p("Freedom House’s Political Rights Index:", a(href = "https://freedomhouse.org/report/freedom-world/freedom-world-2018", "https://freedomhouse.org/report/freedom-world/freedom-world-2018")),
                                    
                                    tags$h1("About me"), 
                                    
@@ -486,7 +486,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$h1("Source Code"), 
                                    
-                                   tags$p("Here is the link to my Github page for this project: https://github.com/CianStryker/BRI_Project") 
+                                   tags$p("Here is the link to my Github page for this project:", a(href = "https://github.com/CianStryker/BRI_Project", "https://github.com/CianStryker/BRI_Project")) 
                                    
                             ),
                             
