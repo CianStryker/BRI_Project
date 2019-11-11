@@ -1,5 +1,5 @@
 # China and the Belt and Road Initiative
-In this project I am analyzing China's use of Foreign Direct investment, especially investment that is apart of the Belt and Road Initiative. The project is largley descriptive in nature although I do use some statistical modelling in the form of regressions to demonstrate what economic and political factors may influence Chinese investment decisions. 
+In this project I am analyzing China's use of Foreign Direct investment, especially investment that is a part of the Belt and Road Initiative. The project is largley descriptive in nature although I do use some statistical modeling in the form of regressions to demonstrate what economic and political factors may influence Chinese investment decisions. 
 
 You can see the website itself here: https://cianstryker.shinyapps.io/China_and_BRI/
 
