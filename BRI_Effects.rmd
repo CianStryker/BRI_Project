@@ -133,10 +133,10 @@ FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
 # Finally, here's my plot that shows the scatter of GDP and FDI
 # with a regression line included for better visualization. 
 
-plot9 <- ggplot(FDI_GDP, aes(x = log_ycum,  y = log_GDP, color  = "red")) +
+plot9 <- ggplot(FDI_GDP, aes(x = log_GDP,  y = log_ycum, color  = "red")) +
    geom_jitter() +
-  labs(x= "Cumulative Chinese FDI (in Billions USD)",
-       y= "GDP PPP (in Billions USD)",
+  labs(x= "GDP PPP (in Billions USD)",
+       y= "Cumulative Chinese FDI (in Billions USD)",
        fill=NULL,
        title= "Regression of All Chinese FDI Recipient Countries: 2018") +
   guides(color = FALSE) +
