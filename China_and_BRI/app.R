@@ -252,7 +252,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                     
                     tabPanel(
                         
-                        title = "Economic Effects of BRI", 
+                        title = "The Economic Narrative", 
                         
                         fluidRow(
                             
@@ -343,7 +343,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                     
                     tabPanel(
                         
-                        title = "Political Effects of BRI", 
+                        title = "The Political Narrative", 
                         
                         fluidRow(
                             
