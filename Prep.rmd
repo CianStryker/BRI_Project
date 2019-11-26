@@ -183,20 +183,21 @@ write_rds(data11, path = "China_and_BRI/RDS_Files/data11.rds")
 
 ```{r PDF}
 
-# Making my PDF now
+# Making my PDF now and
+# making the www shiny directory.
 
 dir_create("PDF_Plots")
+dir_create("BRI_Project/www")
 
-# Need these for the PDF
+# Need these for the PDF.
 
 write_rds(plot1x, path = "PDF_Plots/plot1.rds")
 write_rds(plot4, path = "PDF_Plots/plot4.rds")
 write_rds(plot9, path = "PDF_Plots/plot9.rds")
 
+# Just sending the pdf to Shiny.
 
 file_copy("BRI_Project.pdf", "China_and_BRI/www")
-
-
 ```
 
 
