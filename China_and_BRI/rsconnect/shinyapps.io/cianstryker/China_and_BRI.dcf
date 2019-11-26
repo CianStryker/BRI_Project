@@ -5,8 +5,8 @@ account: cianstryker
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1451517
-bundleId: 2578796
+bundleId: 2617896
 url: https://cianstryker.shinyapps.io/China_and_BRI/
-when: 1573437684.62109
+when: 1574739351.77092
 asMultiple: FALSE
 asStatic: FALSE
