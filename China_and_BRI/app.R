@@ -1,15 +1,8 @@
 #Loading all necessary packages.
 
 library(shiny)
-library(maps)
 library(readr)
-library(shinyanimate)
-library(png)
-library(cowplot)
 library(shinythemes)
-library(reprex)
-library(ggrepel)
-library(gganimate)
 library(tidyverse)
 
 # Here I'm loading in my data for the slider graphs
@@ -445,11 +438,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$h1("Author's Remarks"),
                                    
-                                   tags$p(" # Note for Sascha since I'm pretty sure you're the milestone grader. This video is just a placeholder until I make my own video and post it to youtube. Until then, enjoy Khabib Nurmagomedov wrestling a bear as a kid in Dagestan."),
-                                   
                                    tags$br(), 
                                    
-                                   HTML('<iframe width="100%" height="500" src="https://www.youtube.com/embed/mjfOeLQG9-M" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'),
+                                   HTML('<iframe width="100%" height="500" src="https://www.youtube.com/embed/cvlfV56kKKA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'),
                                    
                                    tags$br()
                                    

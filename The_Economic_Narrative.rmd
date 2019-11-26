@@ -134,13 +134,13 @@ FDI_GDP <- merge(test39, GDP_Final, by = c("year", "country2")) %>%
 # with a regression line included for better visualization. 
 
 plot9 <- ggplot(FDI_GDP, aes(x = log_GDP,  y = log_ycum, color  = "red")) +
-   geom_jitter() +
+  geom_jitter() +
   labs(x= "GDP PPP (in Billions USD)",
        y= "Cumulative Chinese FDI (in Billions USD)",
        fill=NULL,
        title= "Regression of All Chinese FDI Recipient Countries: 2018") +
   guides(color = FALSE) +
-   geom_smooth(method = "lm") 
+  geom_smooth(method = "lm") 
 ```
 
 ```{r, BRI GDP Regression}
