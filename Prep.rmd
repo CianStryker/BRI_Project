@@ -178,6 +178,11 @@ write_rds(linearMod10, path = "China_and_BRI/RDS_Files/linearMod10.rds")
 write_rds(linearMod14, path = "China_and_BRI/RDS_Files/linearMod14.rds")
 write_rds(data11, path = "China_and_BRI/RDS_Files/data11.rds")
 
+
+```
+
+```{r PDF}
+
 # Making my PDF now
 
 dir_create("PDF_Plots")
@@ -185,9 +190,11 @@ dir_create("PDF_Plots")
 # Need these for the PDF
 
 write_rds(plot1x, path = "PDF_Plots/plot1.rds")
-write_rds(plot2, path = "PDF_Plots/plot2.rds")
 write_rds(plot4, path = "PDF_Plots/plot4.rds")
 write_rds(plot9, path = "PDF_Plots/plot9.rds")
+
+
+file_copy("BRI_Project.pdf", "China_and_BRI/www")
 
 
 ```
