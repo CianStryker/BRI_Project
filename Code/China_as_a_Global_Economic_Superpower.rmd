@@ -84,7 +84,7 @@ China_test2 <- China_test1 %>%
   complete(year, nesting(country), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(country) %>%
-  mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
   mutate(y_cum4x = y_cum4 * 1000000) %>%
   filter(year == 2019)
 
@@ -228,7 +228,7 @@ China_1x <- China_1 %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country) %>%
-  mutate(y_cum = cumsum(quantity_in_millions))
+  dplyr::mutate(y_cum = cumsum(quantity_in_millions))
 
 # Here I have to re-aggregate the data to make it work for my line chart. So I do that.
 
@@ -287,7 +287,7 @@ China_sector2 <- China_sector1 %>%
   complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country, sector) %>%
-  mutate(y_cum2 = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum2 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum2 * 1000000)
 
 # Here I just was the data for the year 2019. When I was adding into my previous bit

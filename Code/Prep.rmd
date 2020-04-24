@@ -156,7 +156,7 @@ dev.off()
 ```
 
 
-```{r, RDS Section}
+```{r, RDS Section, warning=FALSE, include=FALSE}
 
 setwd("~/BRI_Project/Website")
 
@@ -178,7 +178,7 @@ write_rds(data11, path = "RDS_Files/data11.rds")
 
 ```
 
-```{r WWW}
+```{r WWW, warning=FALSE, include=FALSE}
 
 setwd("~/BRI_Project/Website")
 
@@ -186,7 +186,7 @@ dir_create("www")
 
 ```
 
-```{r PDF}
+```{r PDF, warning=FALSE, include=FALSE}
 
 # Making my PDF now and
 # making the www shiny directory.
@@ -201,8 +201,6 @@ dir_create("PDF_Plots")
 write_rds(plot1x, path = "PDF_Plots/plot1.rds")
 write_rds(plot4, path = "PDF_Plots/plot4.rds")
 write_rds(plot9, path = "PDF_Plots/plot9.rds")
-
-file_copy("BRI_Project.pdf", "~/BRI_Project/Website/www")
 
 ```
 

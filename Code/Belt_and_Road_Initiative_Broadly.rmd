@@ -89,7 +89,7 @@ China_sector4y <- China_sector4x %>%
   complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country, sector) %>%
-  mutate(y_cum3 = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum3 = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum3 * 1000000) %>%
   filter(year == 2019)
 
@@ -138,7 +138,7 @@ trial <- China2_x %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country) %>%
-  mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum * 1000000) %>%
   filter(year == 2019)
   
@@ -189,6 +189,8 @@ in USD',
            color = '#333333',
            hjust = 'left'
            )
+
+plot6
 ```
 
 ```{r, BRI per Country Scatter Graph}
@@ -201,7 +203,7 @@ data7 <- China2_x %>%
   complete(year, nesting(country2, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country2) %>%
-  mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum * 1000000) 
 
 ```
@@ -216,7 +218,7 @@ trial2x <- China2_x %>%
   complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
   arrange(year) %>%
   group_by(region, country) %>%
-  mutate(y_cum = cumsum(quantity_in_millions)) %>%
+  dplyr::mutate(y_cum = cumsum(quantity_in_millions)) %>%
   mutate(FDI = y_cum * 1000000) 
 
 # Now I just ungroup, and filter for what I want, which happens
@@ -246,6 +248,8 @@ plot8 <- ggplot(trial3, aes(x = country, y = FDI, color = region)) +
   theme(axis.text.x=element_blank()) +
   facet_wrap(~region)
 
+
+plot8
 ```
 
 
