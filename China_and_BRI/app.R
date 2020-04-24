@@ -281,7 +281,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                             
                             column(width = 6,
                                    
-                            imageOutput(outputId = "plot10", width = "90%", height = "80%")
+                            imageOutput(outputId = "plot10", width = "90%", height = "90%")
                             ),
                             
                             column(width = 3)
