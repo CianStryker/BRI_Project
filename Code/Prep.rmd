@@ -107,7 +107,7 @@ dev.off()
 ```{r, Image 8, warning=FALSE, include=FALSE}
 
 
-setwd("~/BRI_Project/China_and_BRI/Images")
+setwd("~/BRI_Project/website/Images")
 
 png(filename = "plot9.png", width = 1300, height = 600)
 plot(plot9)
