@@ -1,0 +1,329 @@
+---
+title: "Page 1"
+author: "Cian Stryker"
+date: "10/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Here I'm just loading everything
+# I'll need for the first page. 
+
+library(readxl)
+library(reshape2)
+library(plyr)
+library(png)
+library(countrycode)
+library(janitor)
+library(jtools)
+library(kableExtra)
+library(gvlma)
+library(maps)
+library(png)
+library(cowplot)
+library(reprex)
+library(ggrepel)
+library(gganimate)
+library(tidyverse)
+```
+
+
+```{r, First loading chunk, message=FALSE}
+
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
+
+# Here I'm loading in my main data source for the project.
+# I clean up a littel by using clean names and skipping lines.
+
+Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
+  clean_names()
+
+# This is important for getting a consistent country name list. 
+# I use the countrycode package to pull this off. 
+
+Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
+```
+
+```{r, Second loading chunk, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
+# To make my map grpahic I need to use the maps packages. 
+# I make the r object, clean up the names, and make them consistent. 
+
+map.world <- map_data('world')
+colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
+map.world$country <- countrycode(map.world$country, "country.name", "country.name")
+
+```
+
+```{r, First setup chunk, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
+# Here's my first thing I want people to see. I want to find the cumulative amount
+# of Chinese FDI per year. So I grab what I need first in terms of variables. 
+
+China_test <- Chinese_FDI %>%
+  select("year", `quantity_in_millions`, "country")
+
+# Not its an aggregate function to find the total amount of FDI per year and country.
+  
+China_test1 <- aggregate(quantity_in_millions ~ country + year, data = China_test, FUN = sum)
+
+# Not I calculate the cumulative amount per year. I've used this function before so 
+# I'm comfortable with it. I do specify that I just want the cumulative FDI in 2019
+# to represent total investment, per country, from 2005 until now. 
+
+China_test2 <- China_test1 %>%
+  complete(year, nesting(country), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(country) %>%
+  mutate(y_cum4 = cumsum(quantity_in_millions)) %>%
+  mutate(y_cum4x = y_cum4 * 1000000) %>%
+  filter(year == 2019)
+
+# Here I'm just merging my map.world data with my FDI data. Left join does exactly what
+# I want so I use it. Maybe I could've used merge, but here I thought left_join was more 
+# appropriate. I join the two on the "country" column which is now uniform. 
+
+workss <- left_join(map.world, China_test2, by = c("country"))
+```
+
+```{r, Maping chunk}
+
+# Here is my map code chunk! This was pretty difficult, but essentially its ggplot
+# with a ton of details thrown in. I had to go to Stackoverflow to get a 
+# template and then tweak it to make it my own. Using the combined data from
+# before I can fill in the data per country across the globe. Super cool. I tweak
+# the values for the legend and colors. I also tweak the colors to make it more logical
+# and recognizable for the reader. Hmm... I also add in some aesthetic choices such as
+# labels, removing tick marks, and adding in a source label. Feel free to critique but
+# I really like this and I want to use it alot for different stages of my project.
+
+plot1 <- ggplot(workss, aes( x = long, y = lat, group = group )) +
+  geom_polygon(aes(fill = y_cum4x)) +
+  guides(fill = guide_legend(reverse = T,)) +
+  scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
+                       ,values = scales::rescale(c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11))
+                       ,breaks = c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11)
+              
+                       ) +
+  labs(fill = 'Commulative FDI
+in USD',
+       title = 'Cumulative Chinese Foreign Direct Investment by Country',
+       subtitle = '2019',
+       x = NULL,
+       y = NULL) +
+  theme(text = element_text(color = '#333333'),
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 14),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = '#CCCCCC'),
+        legend.position = c(.18,.36),
+        legend.background = element_rect(fill = '#CCCCCC'),
+        legend.key = element_blank()
+        ) +
+  annotate(geom = 'text',
+           label = 'Source: The American Enterprise Institute and The Heritage Foundation',
+           x = 14, y = -55,
+           size = 3,
+           color = '#333333',
+           hjust = 'left'
+           )
+
+# This is literally the same plot as above, but
+# for my pdf I need a version with a shorter
+# title.
+
+plot1x <- ggplot(workss, aes( x = long, y = lat, group = group )) +
+  geom_polygon(aes(fill = y_cum4x)) +
+  guides(fill = guide_legend(reverse = T,)) +
+  scale_fill_gradientn(colours = c('#461863','#404E88','#2A8A8C','#7FD157','#F9E53F')
+                       ,values = scales::rescale(c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11))
+                       ,breaks = c(0,2e+10, 3e+10, 4e+10, 1e+11, 1.8e+11)
+              
+                       ) +
+  labs(fill = 'Commulative FDI
+in USD',
+       title = 'Cumulative Chinese FDI Abroad',
+       subtitle = '2019',
+       x = NULL,
+       y = NULL) +
+  theme(text = element_text(color = '#333333'),
+        plot.title = element_text(size = 12),
+        plot.subtitle = element_text(size = 10),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = '#CCCCCC'),
+        legend.position = c(.18,.36),
+        legend.background = element_rect(fill = '#CCCCCC'),
+        legend.key = element_blank()
+        ) +
+  annotate(geom = 'text',
+           label = 'Source: The American Enterprise Institute and The Heritage Foundation',
+           x = 14, y = -55,
+           size = 2,
+           color = '#333333',
+           hjust = 'left'
+           )
+
+```
+
+```{r, overall bar chart, message=FALSE}
+
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
+
+# Here I'm creating a new data set and aggregating what I need. 
+# Also I'm putting the FDI in the proper numeric form
+
+China_simple_1 <- aggregate(quantity_in_millions ~ year, data = Chinese_FDI, FUN = sum) %>%
+  mutate(FDI = quantity_in_millions * 1000000)
+
+# This is just a simple ggplot bar graph to show how much FDI has increased since 2005.
+# Its pretty astonishing to be honest. I put a gradient on it. I didn't feel it was 
+# necessary to get too fancy with this beyond labels.
+
+plot2 <- ggplot(China_simple_1, aes(x = year, y = FDI, fill = year)) +
+  guides(fill = FALSE) +
+  geom_col() +
+  labs(
+    title = "Chinese Direct Foreign Investment Per Year",
+    x = "Years", 
+    y = "FDI in USD"
+  )
+  
+```
+
+
+```{r, Line graph setup and graph}
+
+# Same deal as before but now I want to show has this FDI has 
+# differed between regions. So I grab what I need to start, which now includes region annd country. 
+
+China <- Chinese_FDI %>%
+  select("year", `quantity_in_millions`, "country", "region") 
+
+# Now I'm aggregating again but based of my new variables.
+  
+China_1 <- aggregate(quantity_in_millions ~ country 
+                     + year 
+                     + region, 
+                     data = Chinese_FDI, 
+                     FUN = sum)
+
+# This is another cummulative calculation. I find the cummulative data to be more 
+# illustrative of FDI effects than just yearly investment. 
+
+China_1x <- China_1 %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum = cumsum(quantity_in_millions))
+
+# Here I have to re-aggregate the data to make it work for my line chart. So I do that.
+
+China_1y <- aggregate(y_cum ~  year + region, data = China_1x, FUN = sum) %>%
+  mutate(FDI = y_cum *1000000)
+
+# Finally this is just a simple line chart that shows how investment has changed overtime. 
+# I originally had an animated bar chart, but I think this is a much better representation.
+# I add in some detail work like labels and reorder my x axis. Note: My data treats 
+# the US and North American separate. I actually like this because it really shows
+# how much investment goes into the US, so I kept it separate as well.
+
+plot3 <- ggplot(China_1y, aes(x = year, y = FDI, group = region)) +
+  geom_line(aes(linetype= "dash", color= region)) +
+  geom_point(aes(color=region)) +
+  labs(
+    color = "Region",
+    title = "Cumulative Chinese FDI over Time",
+    subtitle = "Per Region",
+    x = "Year",
+    y = "Cumulative FDI in USD"
+  ) +
+  scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
+   scale_y_continuous(breaks = seq(0, 4e+11, 5e+10)) +
+  guides(linetype = FALSE) 
+
+```
+
+
+```{r, BRI Chunk}
+
+# Here I want to isolate the BRI areas so grab what I want in term of variables
+# and then filter for only the investment sectors that are BRI specific 
+# and also only BRI target areas plus Europe and the US to demonstrate the new divisions.
+
+China_sector <- Chinese_FDI %>%
+    select("country", "region", "year", "sector", "quantity_in_millions") %>%
+    filter(sector %in% c("Energy", "Real estate", "Metals", "Transport")) %>%
+    filter(region %in% c("Arab Middle East and North Africa",
+                         "East Asia", "South America", "Europe", 
+                         "USA", 
+                         "Sub-Saharan Africa", 
+                         "West Asia")) 
+
+# Another aggregate chunk but now on country, year, region, and sector. Nothing crazy though.
+  
+China_sector1 <- aggregate(quantity_in_millions ~ country + year 
+                           + region 
+                           + sector, 
+                           data = China_sector, 
+                           FUN = sum)
+
+# You've never seen this before huh? Yeah it's another cummulative calculation. 
+
+China_sector2 <- China_sector1 %>%
+  complete(year, nesting(country, region, sector), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country, sector) %>%
+  mutate(y_cum2 = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum2 * 1000000)
+
+# Here I just was the data for the year 2019. When I was adding into my previous bit
+# of code it seemed to create issues so I just did it separately. Some issues are 
+# just not worth the time in my opinion if they can be handled quickly
+# in a simpler, if less elegant, way. 
+
+China_sector3 <- China_sector2 %>%
+    filter(year == 2019)
+
+w <-aggregate(FDI ~ region + year, data = China_sector2, FUN = sum) %>%
+  arrange(desc(FDI))
+  
+```
+
+```{r, Last plot for About}
+
+# This is essentially a simple bar chart, but I've added in enough facet wraps to
+# really demonstrate how it differs per region. Also I show the different sectors
+# on the x axis. It's a little cluttered, but I think it's important to show each 
+# region here. Later, I'll simplify my graphics to show only BRI regions, but here 
+# I think adding in Europe and the US really show how depending on which FDI sectors
+# we look at, the division of investment differs dramatically. 
+
+plot4 <- ggplot(w, aes(x = year, y = FDI, group = region)) +
+  geom_line(aes(linetype= "dash", color= region)) +
+  geom_point(aes(color=region)) +
+  labs(
+    color = "Region",
+    title = "Cumulative BRI Investment over Time",
+    subtitle = "Per Region",
+    x = "Year",
+    y = "FDI in Billions USD"
+  ) +
+  scale_x_continuous(breaks = seq(2005, 2019, 2), lim = c(2005, 2019)) +
+  scale_y_continuous(breaks = seq(0, 2.5e+11, 5e+10)) +
+  guides(linetype = FALSE) 
+  
+```

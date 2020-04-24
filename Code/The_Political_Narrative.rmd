@@ -1,0 +1,357 @@
+---
+title: "Page 4"
+author: "Cian Stryker"
+date: "10/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Just another loading chunk
+
+library(readxl)
+library(reshape2)
+library(plyr)
+library(countrycode)
+library(janitor)
+library(jtools)
+library(kableExtra)
+library(gvlma)
+library(maps)
+library(png)
+library(cowplot)
+library(reprex)
+library(ggrepel)
+library(gganimate)
+library(tidyverse)
+```
+
+```{r, Chinese FDI Loading, message=FALSE}
+
+# I use Message=FALSE because I 
+# didn't know how to fix the errors.
+
+# This is just another FDI loading chunk too. 
+
+Chinese_FDI <- read_excel("raw-data/Chinese_Investment_and_Construction.xlsx", skip = 4) %>%
+  clean_names()
+
+# Country names need to be consistent. 
+
+Chinese_FDI$country <- countrycode(Chinese_FDI$country, "country.name", "country.name")
+Chinese_FDI$country2 = Chinese_FDI$country
+
+# I need abreviated names too. 
+
+Chinese_FDI$country2 <- countrycode(Chinese_FDI$country2, "country.name", "iso2c")
+
+```
+
+```{r, Freedom House Loading, include=FALSE}
+
+# I use include=FALSE because I 
+# didn't want the message. 
+
+# Now I'm grabbing Freedom House's Politcal
+# Rights data.
+
+PR <- read_excel("raw-data/PR.xlsx")
+
+# Time to shift it into long form.
+
+Pr_1 <- melt(PR, measure.vars = 2:15) 
+
+# Clean up the column names to make things easier.
+
+colnames(Pr_1)[colnames(Pr_1) == 'variable'] <- 'year'
+colnames(Pr_1)[colnames(Pr_1) == 'value'] <- 'PR'
+colnames(Pr_1)[colnames(Pr_1) == 'Country'] <- 'country'
+
+# Finally, I want consistent country names for joins later. 
+
+Pr_1$country <- countrycode(Pr_1$country, "country.name", "country.name")
+```
+
+```{r, Mapwold loading, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
+# Grabbing my map data once again. 
+
+map.world <- map_data('world')
+colnames(map.world)[colnames(map.world) == 'region'] <- 'country'
+map.world$country <- countrycode(map.world$country, "country.name", "country.name")
+```
+
+```{r, GDP loading, message=FALSE, warning=FALSE}
+
+# I use Message=FALSE and warning=FALSE because I 
+# didn't know how to fix the errors. 
+
+# Here I'm loading in my GDP data from the World Bank
+
+GDP_An <- read_excel("raw-data/GDP.xls", skip = 2) 
+ 
+# The data comes in wide form so I use melt
+# to shift it to long form and then I clean
+# up the names
+
+GDP2 <- melt(GDP_An, measure.vars = 2:15) %>%
+  clean_names()
+
+# Now I'm cleaning up the column names to make it
+# easier in the future to joins.
+
+colnames(GDP2)[colnames(GDP2) == 'variable'] <- 'year'
+colnames(GDP2)[colnames(GDP2) == 'value'] <- 'GDP_Increase'
+colnames(GDP2)[colnames(GDP2) == 'country_name'] <- 'country'
+
+# Time to bring in consistent country names
+
+GDP2$country <- countrycode(GDP2$country, "country.name", "country.name") 
+GDP2$country2 = GDP2$country
+
+
+# I also want abreviated names too
+
+GDP2$country2 <- countrycode(GDP2$country2, "country.name", "iso2c")
+
+# Finally I want to drop all 
+# the NA data.
+
+GDP_Final <- na.omit(GDP2)
+```
+
+```{r, BRI and Political Rights Bar Graph}
+
+# To begin I'm doing what I usually do, 
+# I grab the info I need.
+
+x <- Chinese_FDI %>%
+  select("year", "quantity_in_millions","region", "country") 
+
+# Then I filter for BRI regions once again.  
+
+x2 <- x %>%
+    filter(region %in% c("Arab Middle East and North Africa", 
+                         "East Asia", 
+                         "South America",
+                         "Sub-Saharan Africa", 
+                         "West Asia"))
+
+# Yet another aggregate for my data. 
+
+x3 <- aggregate(quantity_in_millions ~ country + year + region, data = x2, FUN = sum) 
+
+# And surprise, surprise, I'm find the cummulative amount in the exact
+# same way I found it before. 
+
+x4 <-x3 %>%
+  complete(year, nesting(country, region), fill = list(quantity_in_millions=0)) %>%
+  arrange(year) %>%
+  group_by(region, country) %>%
+  mutate(y_cum5 = cumsum(quantity_in_millions)) %>%
+  mutate(FDI = y_cum5 * 1000000)
+
+# Here I'm merging this data with my Freedom House
+# data and filtering for the 7 pr categories.
+
+x5 <- merge(x4, Pr_1, by = c("year", "country")) %>%
+  filter(PR %in% c("1", "2", "3", "4", "5", "6", "7")) %>%
+  group_by(PR)
+```
+
+```{r, PR Map Data}
+
+# I want to make maps of PR across the BRI regions for 
+# both 2005 and 2018 so I filter for 2005 here. 
+
+Map1 <- x5 %>%
+  filter(year == 2005)
+
+# Then I join that info with my previous PR data. 
+
+Map1x <- left_join(map.world, Map1, by = c("country"))
+
+# I filter for 2018 now.
+
+Map2 <- x5 %>%
+  filter(year == 2018)
+
+# And then join that as well to PR data. 
+
+Map2x <- left_join(map.world, Map2, by = c("country"))
+
+```
+
+```{r, Prepping plots}
+
+# I want to make two plots for cowplot so I start by
+# merging my FDI data with the PR data and creating
+# a log10 of the FDI data. 
+
+x6 <- merge(x4, Pr_1, by = c("year", "country")) %>%
+  group_by(PR) %>%
+  mutate(log_ycum5 = log10(FDI))
+
+# Then I just want that data for 2008 and 
+# only the 7 PR categories so I filter for
+# those. I also remove weird outliers by
+# only grabbing FDi data above 0.
+
+x7 <- x6 %>%
+  filter(year == 2008) %>%
+  filter(PR %in% c(1,2, 3, 4, 5, 6, 7)) %>%
+  filter(log_ycum5 >= 0)
+
+# I repeat this process but for 2018 now. 
+
+x8 <- x6 %>%
+  filter(year == 2018)%>%
+  filter(PR %in% c(1,2, 3, 4, 5, 6, 7))%>%
+  filter(log_ycum5 >= 0)
+```
+
+```{r, Plot 1}
+
+# My first plot is here. Nothing crazy but I 
+# do add in some detail work to make it look cool.
+
+plot_1 <- ggplot(x7, aes(x = PR,  y = log_ycum5, fill = PR)) +
+   geom_boxplot() +
+   expand_limits(y =11) +
+  scale_y_log10(breaks = c(8, 8.5, 9, 9.5, 10, 10.5, 11),
+                     labels = c(8, 8.5, 9, 9.5, 10, 10.5, 11)) +
+  guides(fill = FALSE) +
+labs(x= "Political Rights",
+       y="Cumulative Chinese BRI Investment (in Billions USD)",
+       fill=NULL,
+       title= "Politcal Rights in 2008",
+     subtitle = "BRI Investment per Category")
+```
+
+```{r, Plot 2}
+
+# The idea here is to make Plot 2 look exactly like 
+# Plot 1 because they'll be next to eachother. 
+
+plot_2 <- ggplot(x8, aes(x = PR,  y = log_ycum5, fill = PR)) +
+   geom_boxplot() +
+  labs(x= "Political Rights",
+       y= NULL,
+       fill=NULL,
+       title= "Politcal Rights in 2019",
+       subtitle = " ") +
+  expand_limits(y =11) +
+  scale_y_log10(breaks = c(8, 8.5, 9, 9.5, 10, 10.5, 11),
+                     labels = c("8", "8.5", "9", "9.5", "10", "10.5", "11")) +
+  guides(fill = FALSE)
+```
+
+```{r, Cowplot}
+
+# I love Cowplot so I had to add it in my final 
+# project one way or another. 
+
+plot13 <- plot_grid(plot_1, plot_2, labels = NULL)
+```
+
+```{r, Regression 2}
+
+# I wanted to run a regression for 
+# everything I have up till now.
+# So I merge GDP, PR, and FDI together
+# and then filter for 2018. 
+
+FDI_PR <- merge(x6, GDP_Final) %>%
+  mutate(GDP = GDP_Increase, 
+         FDI = y_cum5) %>%
+  filter(year == 2018)
+
+# Using the data above, I run a linear regression
+# for all three factors. 
+
+linearMod14 <- lm(FDI ~ GDP + PR, data=FDI_PR)  
+```
+
+
+
+```{r, World Map 1, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
+# This is just another world map chunk but now for PR in 2005.
+# It's essentially a lot of detail work
+# but I explained most of it in the 'About_Page' so see those comments for
+# more details. 
+
+plot15 <- ggplot(Map1x, aes( x = long, y = lat, group = group )) +
+  geom_polygon(aes(fill = PR)) +
+  guides(fill = guide_legend(reverse = T,)) +
+  scale_fill_discrete() +
+  labs(fill = 'Political Rights',
+       title = 'Political Rights within the BRI Regions',
+       subtitle = '2005',
+       x = NULL,
+       y = NULL) +
+  theme(text = element_text(color = '#333333'),
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 14),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = '#CCCCCC'),
+        legend.position = c(.18,.36),
+        legend.background = element_rect(fill = '#CCCCCC'),
+        legend.key = element_blank()
+        ) +
+  annotate(geom = 'text',
+           label = 'Source: Freedom House',
+           x = 18, y = -55,
+           size = 3,
+           color = '#333333',
+           hjust = 'left'
+           )
+```
+
+```{r, World Map 2, warning=FALSE}
+
+# I use warning=FALSE because I 
+# didn't know how to fix the errors.
+
+# This is just another world map chunk but now for PR in 2018.
+# It's essentially a lot of detail work
+# but I explained most of it in the 'About_Page' so see those comments for
+# more details. 
+
+plot16 <- ggplot(Map2x, aes( x = long, y = lat, group = group )) +
+  geom_polygon(aes(fill = PR)) +
+  guides(fill = guide_legend(reverse = T,)) +
+  scale_fill_discrete() +
+  labs(fill = 'Political Rights',
+       title = 'Political Rights within the BRI Regions',
+       subtitle = '2018',
+       x = NULL,
+       y = NULL) +
+  theme(text = element_text(color = '#333333'),
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 14),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        panel.grid = element_blank(),
+        plot.background = element_rect(fill = '#CCCCCC'),
+        legend.position = c(.18,.36),
+        legend.background = element_rect(fill = '#CCCCCC'),
+        legend.key = element_blank()
+        ) +
+  annotate(geom = 'text',
+           label = 'Source: Freedom House',
+           x = 18, y = -55,
+           size = 3,
+           color = '#333333',
+           hjust = 'left',
+           )
+```
