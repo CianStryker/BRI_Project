@@ -156,6 +156,26 @@ dev.off()
 ```
 
 
+```{r, Model10, warning=FALSE, include=FALSE}
+
+# Round 12
+
+setwd("~/BRI_Project/Website/Images")
+
+linearMod10 %>%
+   gtsave("Model_10.png")
+```
+
+```{r, Model10, warning=FALSE, include=FALSE}
+
+# Round 13
+
+setwd("~/BRI_Project/Website/Images")
+
+linearMod14 %>%
+   gtsave("Model_14.png")
+```
+
 ```{r, RDS Section, warning=FALSE, include=FALSE}
 
 setwd("~/BRI_Project/Website")
@@ -168,14 +188,8 @@ dir_create("RDS_Files")
 # the linear regressions as rds files to be put in my shiny
 # directory.
 
-
-
 write_rds(data7, path = "RDS_Files/data7.rds")
-write_rds(linearMod10, path = "RDS_Files/linearMod10.rds")
-write_rds(linearMod14, path = "RDS_Files/linearMod14.rds")
 write_rds(data11, path = "RDS_Files/data11.rds")
-
-
 ```
 
 ```{r WWW, warning=FALSE, include=FALSE}

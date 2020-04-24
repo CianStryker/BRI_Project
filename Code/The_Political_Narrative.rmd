@@ -273,7 +273,40 @@ FDI_PR <- merge(x6, GDP_Final) %>%
 # Using the data above, I run a linear regression
 # for all three factors. 
 
-linearMod14 <- lm(FDI ~ GDP + PR, data=FDI_PR)  
+linearMod14x <- lm(FDI ~ GDP + PR, data=FDI_PR)
+
+summary(linearMod14x)
+
+# I'm using tidy and gt to put it into a professional format. 
+
+linearMod14 <- lm(FDI ~ GDP + PR, data=FDI_PR) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", "GDP", "PR1", "PR2", "PR3", "PR4", "PR5", "PR6", "PR7")
+  ) %>%
+  gt() %>%
+  fmt_number(columns = vars("statistic"),
+             decimals = 2, use_seps = FALSE) %>%
+  cols_label("term" = " ",
+             "estimate" = "Estimate",
+             "std.error" = "Standard Error", 
+             "statistic" = "t", 
+             "p.value" = "p") %>%
+  tab_header(
+    title = "Chinese Foreign Direct Investment as a Result of GDP and Political Rights",
+    subtitle = "OLS Regressions"
+  ) %>%
+  cols_align(align = c("auto"), columns = TRUE) %>%
+  tab_source_note(
+    source_note = md("Adjusted R-squared:  0.2456")
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(style = "italic")),
+    locations = cells_column_labels(
+      columns = c("statistic", "p.value"))
+    ) 
 ```
 
 

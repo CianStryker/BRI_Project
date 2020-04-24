@@ -17,6 +17,7 @@ library(plyr)
 library(countrycode)
 library(janitor)
 library(jtools)
+library(gt)
 library(kableExtra)
 library(gvlma)
 library(maps)
@@ -146,7 +147,40 @@ plot9 <- ggplot(FDI_GDP, aes(x = log_GDP,  y = log_ycum, color  = "red")) +
 
 # Here's my regression as well. 
 
-linearMod10 <- lm(FDI ~ GDP, data=FDI_GDP)  
+linearMod10_1 <- lm(FDI ~ GDP, data=FDI_GDP) 
+
+summary(linearMod10_1)
+
+# I'm using tidy and gt to put it into a professional format. 
+
+linearMod10 <- lm(FDI ~ GDP, data=FDI_GDP) %>%
+  tidy() %>%
+  mutate(
+    p.value = scales::pvalue(p.value),
+    term = c("Intercept", "GDP")
+  ) %>%
+  gt() %>%
+  fmt_number(columns = vars("statistic"),
+             decimals = 2, use_seps = FALSE) %>%
+  cols_label("term" = " ",
+             "estimate" = "Estimate",
+             "std.error" = "Standard Error", 
+             "statistic" = "t", 
+             "p.value" = "p") %>%
+  tab_header(
+    title = "Chinese Foreign Direct Investment as a Result of GDP",
+    subtitle = "OLS Regression"
+  ) %>%
+  cols_align(align = c("auto"), columns = TRUE) %>%
+  tab_source_note(
+    source_note = md("Adjusted R-squared:  0.241")
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(style = "italic")),
+    locations = cells_column_labels(
+      columns = c("statistic", "p.value"))
+    ) 
 ```
 
 ```{r, BRI and GDP Scatter Plot }
