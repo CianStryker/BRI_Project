@@ -269,17 +269,22 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    tags$p("There are a few things of note within the linear regression below. First would be the statistical significance of the results for GDP, which is highly significant. This demonstrates that it is highly unlikely that this relationship exists by chance. Second, the coefficient of GDP is positive in nature. Finally, the adjusted R-squared value of .24 means that only about a quarter of the variance is captured by this regression. While not terrible, this does suggest that many variables exist that explain the amount of Chinese investment other than the GDP of target countries, which is an intuitive concept. That being said, there is a large portion of this variance that is explained by the GDP. This model does seem to suggest, therefore, that it is likely that high GDP levels make countries more attractive for investment overall, which is a rather intuitive explanation."),
                                            
                                    tags$br(),
-                                   
-                                   imageOutput(outputId = "plot10", width = "100%", height = "100%")
-                                   
-                                   
-                                   
-                                   
-                                   
+
                             ),
                             
                             column(width = 2)
                             
+                        ),
+                        
+                        fluidRow(
+                            column(width = 3), 
+                            
+                            column(width = 6,
+                                   
+                            imageOutput(outputId = "plot10", width = "90%", height = "80%")
+                            ),
+                            
+                            column(width = 3)
                         ),
                         
                         fluidRow(
@@ -361,21 +366,36 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$p("The main take away of the graphic above is the lack of any clear pattern between Chinese investment and any particular political rights category, which includes illiberal regimes. Of note, however, might be that the number of category ‘seven’ countries is much higher in 2019 than in 2008. Considering the fact that investment in category 4 and 2 countries has also improved dramatically, it would be improper to state that any direct relationship exists between Chinese FDI and illiberalism. A multi-variant linear regression is preformed below to more rigorously test this visualization."),
                                    
-                                   tags$br(), 
+                                   tags$br()
                                    
-                                   imageOutput(outputId = "plot14", width = "100%", height = "100%"),
                                    
+                            )
+                        ),
+                            fluidRow(
+                                column(width = 3),
+                                
+                                column(width = 6,
+                                   
+                                   imageOutput(outputId = "plot14", width = "100%", height = "100%")),
+                                
+                                column(width = 3)
+                                   
+                        ),
+                        
+                        fluidRow(
+                            
+                                column(width = 2),
+                                   
+                                column(width = 8,
                                    tags$br(), 
                                    
                                    tags$p("The regression above essentially demonstrates the same information from the box-and-whisker plots. While a positive relationship between GDP and FDI is still apparent, only the political rights category of 1 has a statistically significant, negative relationship and even then, it is weaker at only p = 0.05. No other category has a significant relationship. This adequately demonstrates that little relationship if any exists between Chinese investment and the political preferences of target countries. Potentially the negative relationship between category 1 countries and FDI signifies the preference of Chinese investors to avoid the most democratic countries within the BRI regions. One thing worth exploring, however, is geographically how did political preferences change over time.")
-                                   
+                                ),
+                                
+                                column(width = 2)
                                    
                             ),
                             
-                            column(width = 2)
-                            
-                        ),
-                        
                         fluidRow(
                             
                             column(width = 2),

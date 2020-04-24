@@ -29,7 +29,7 @@ library(fs)
 
 # Step 1 is to set the working directory
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 
 # Then I create a png file before I load my already 
 # created graph into that file.
@@ -47,7 +47,7 @@ dev.off()
 
 # Round 2
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot2.png", width = 1300, height = 600)
 plot(plot2)
 dev.off()
@@ -57,7 +57,7 @@ dev.off()
 
 # Round 3
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot3.png", width = 1300, height = 600)
 plot(plot3)
 dev.off()
@@ -67,7 +67,7 @@ dev.off()
 
 # Round 4
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot4.png", width = 1300, height = 600)
 plot(plot4)
 dev.off()
@@ -77,7 +77,7 @@ dev.off()
 
 # Round 5
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot5.png", width = 1300, height = 600)
 plot(plot5)
 dev.off()
@@ -88,7 +88,7 @@ dev.off()
 
 # Round 6
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot6.png", width = 1300, height = 700)
 plot(plot6)
 dev.off()
@@ -98,7 +98,7 @@ dev.off()
 
 # Round 7
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot8.png", width = 1300, height = 600)
 plot(plot8)
 dev.off()
@@ -107,7 +107,7 @@ dev.off()
 ```{r, Image 8, warning=FALSE, include=FALSE}
 
 
-setwd("~/BRI_Project/website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 
 png(filename = "plot9.png", width = 1300, height = 600)
 plot(plot9)
@@ -119,7 +119,7 @@ dev.off()
 
 # Round 8
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot12.png", width = 1300, height = 600)
 plot(plot12)
 dev.off()
@@ -129,7 +129,7 @@ dev.off()
 
 #Round 9
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot13.png", width = 1300, height = 600)
 plot(plot13)
 dev.off()
@@ -139,7 +139,7 @@ dev.off()
 
 # Round 10
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot15.png", width = 900, height = 700)
 plot(plot15)
 dev.off()
@@ -149,7 +149,7 @@ dev.off()
 
 # Round 11
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 png(filename = "plot16.png", width = 900, height = 700)
 plot(plot16)
 dev.off()
@@ -160,7 +160,7 @@ dev.off()
 
 # Round 12
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 
 linearMod10 %>%
    gtsave("Model_10.png")
@@ -170,7 +170,7 @@ linearMod10 %>%
 
 # Round 13
 
-setwd("~/BRI_Project/Website/Images")
+setwd("~/BRI_Project/China_and_BRI/Images")
 
 linearMod14 %>%
    gtsave("Model_14.png")
@@ -178,7 +178,7 @@ linearMod14 %>%
 
 ```{r, RDS Section, warning=FALSE, include=FALSE}
 
-setwd("~/BRI_Project/Website")
+setwd("~/BRI_Project/China_and_BRI")
 
 # Here I make my r object directory in my shiny app.
 
@@ -194,7 +194,7 @@ write_rds(data11, path = "RDS_Files/data11.rds")
 
 ```{r WWW, warning=FALSE, include=FALSE}
 
-setwd("~/BRI_Project/Website")
+setwd("~/BRI_Project/China_and_BRI")
 
 dir_create("www")
 
