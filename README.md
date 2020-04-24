@@ -3,6 +3,9 @@ In this project I am analyzing China's use of foreign direct investment, especia
 
 You can see the website itself [here](https://cianstryker.shinyapps.io/China_and_BRI/)
 
+# Repo Guide
+
+
 # Data
 The data sets for the project are the following:
 
