@@ -8,7 +8,7 @@ You can see the website itself [here](https://cianstryker.shinyapps.io/China_and
 
 - A pdf summary of this project can be found under the "PDF" file.
 
-- The code and essential figures for the website can be found under the "Webstie" file. 
+- The code and essential figures for the website can be found under the file labelled "China_and_BRI". 
 
 # Data
 The data sets for the project are the following:
