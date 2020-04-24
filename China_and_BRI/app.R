@@ -270,7 +270,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                            
                                    tags$br(),
                                    
-                                   verbatimTextOutput(outputId = "plot10")
+                                   imageOutput(outputId = "plot10", width = "100%", height = "100%")
                                    
                                    
                                    
@@ -363,7 +363,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$br(), 
                                    
-                                   verbatimTextOutput(outputId = "plot14"),
+                                   imageOutput(outputId = "plot14", width = "100%", height = "100%"),
                                    
                                    tags$br(), 
                                    
@@ -630,11 +630,22 @@ server <- function(input, output) {
         
     }, deleteFile = FALSE)
     
-    # I'm literally just running summary on my regression.
+    # I'm just calling the image of my model I stored locally. 
     
-    output$plot10 <- renderPrint(
-        summary(linearMod10)
-    )
+    output$plot10 <- renderImage({
+        
+        filename9 <- normalizePath(file.path("./Images",
+                                             paste("Model_10.png")))
+        
+        list(src = filename9,
+             contentType = "image/png", 
+             width = "100%",
+             height = "100%"
+        )
+        
+    }, deleteFile = FALSE)
+    
+
     
     # Toggle graph time. 
     
@@ -693,9 +704,18 @@ server <- function(input, output) {
     
     # Here I'm just calling an image in that I've stored locally. 
     
-    output$plot14 <- renderPrint(
-        summary(linearMod14) 
-    )
+    output$plot14 <- renderImage({
+        
+        filename9 <- normalizePath(file.path("./Images",
+                                             paste("Model_14.png")))
+        
+        list(src = filename9,
+             contentType = "image/png", 
+             width = "100%",
+             height = "100%"
+        )
+        
+    }, deleteFile = FALSE)
     
     
     # Here I'm just calling an image in that I've stored locally. 
