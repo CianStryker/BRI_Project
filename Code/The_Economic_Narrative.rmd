@@ -15,7 +15,7 @@ library(readxl)
 library(reshape2)
 library(plyr)
 library(countrycode)
-library(janitor)d
+library(janitor)
 library(jtools)
 library(gt)
 library(kableExtra)

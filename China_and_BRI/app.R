@@ -268,7 +268,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$p("There are a few things of note within the linear regression below. First would be the statistical significance of the results for GDP, which is highly significant. This demonstrates that it is highly unlikely that this relationship exists by chance. Second, the coefficient of GDP is positive in nature. Finally, the adjusted R-squared value of .24 means that only about a quarter of the variance is captured by this regression. While not terrible, this does suggest that many variables exist that explain the amount of Chinese investment other than the GDP of target countries, which is an intuitive concept. That being said, there is a large portion of this variance that is explained by the GDP. This model does seem to suggest, therefore, that it is likely that high GDP levels make countries more attractive for investment overall, which is a rather intuitive explanation."),
                                            
-                                   tags$br(),
+                                   tags$br()
 
                             ),
                             
@@ -376,7 +376,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                 
                                 column(width = 6,align="center",
                                    
-                                   imageOutput(outputId = "plot14", width = "70%", height = "100%")),
+                                   imageOutput(outputId = "plot14", width = "60%", height = "100%")),
                                 
                                 column(width = 3)
                                    
@@ -422,32 +422,30 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 2), 
                             
-                            column(width = 8, align="center", 
+                            column(width = 4, 
                                    
                                    
-                                   imageOutput(outputId = "plot15",  width = "60%", height = "60%")
+                                   imageOutput(outputId = "plot15",  width = "100%", height = "100%")
                                    
-                            )
-                            
-                        ),
-                        
-                        fluidRow(
-                            
-                            column(width = 2),
+                            ),
+                                  
+  
                             
                             
-                            column(width = 8, align="center",
+                            column(width = 4,
                                    
                                    
-                                   imageOutput(outputId = "plot16",  width = "60%", height = "60%")
+                                   imageOutput(outputId = "plot16",  width = "100%", height = "100%")
                                    
                                    
                             )
                             
                             
                         )
+                            
+                        
                         
                         
                         
