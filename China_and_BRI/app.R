@@ -38,9 +38,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h2("Chinese Investment"),
                                    
@@ -50,23 +50,23 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
                             
-                            column(width = 8,
+                            column(6,
                                    
                                    tags$h2("Foreign Direct Investment Broadly"),
                                    
                                    tags$br(),
                                    
-                                   imageOutput(outputId = "plot1", width = "100%", height = "110%"),
+                                   imageOutput(outputId = "plot1", width = "100%", height = "100%"),
                                    
                                    tags$br(),
                                    
@@ -76,7 +76,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                                    tags$br(), 
                                    
-                                   imageOutput(outputId = "plot2", width = "100%", height = "100%"),
+                                   imageOutput(outputId = "plot2", width = "100%", height = "00%"),
                                    
                                    tags$br() 
                                    
@@ -85,15 +85,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h2("Chinese FDI per Region"),
                                    
@@ -111,15 +111,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h2("'One Belt, One Road'"),
                                    
@@ -136,7 +136,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                             
                             
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         )
                         
@@ -149,9 +149,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("BRI"), 
                                    
@@ -178,15 +178,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("Investment By Country"), 
                                    
@@ -210,15 +210,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    )
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("Top Investment Targets"), 
                                    
@@ -236,7 +236,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         )
                         
@@ -248,9 +248,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("BRI and GDP"), 
                                    
@@ -272,16 +272,16 @@ ui <- fluidPage(theme = shinytheme("superhero"),
 
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             column(width = 3), 
                             
-                            column(width = 6,
+                            column(width = 6, align="center",
                                    
-                            imageOutput(outputId = "plot10", width = "90%", height = "90%")
+                            imageOutput(outputId = "plot10", width = "60%", height = "100%")
                             ),
                             
                             column(width = 3)
@@ -289,9 +289,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("A Closer Look"), 
                                    
@@ -311,15 +311,15 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         ),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$br(),
                                    
@@ -332,7 +332,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                                    
                             ),
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                         )
                         
@@ -344,9 +344,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8,
+                            column(width = 6,
                                    
                                    tags$h1("BRI and Political Rights"), 
                                    
@@ -374,9 +374,9 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                             fluidRow(
                                 column(width = 3),
                                 
-                                column(width = 6,
+                                column(width = 6,align="center",
                                    
-                                   imageOutput(outputId = "plot14", width = "100%", height = "100%")),
+                                   imageOutput(outputId = "plot14", width = "70%", height = "100%")),
                                 
                                 column(width = 3)
                                    
@@ -384,23 +384,23 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                                column(width = 2),
+                                column(width = 3),
                                    
-                                column(width = 8,
+                                column(width = 6,
                                    tags$br(), 
                                    
                                    tags$p("The regression above essentially demonstrates the same information from the box-and-whisker plots. While a positive relationship between GDP and FDI is still apparent, only the political rights category of 1 has a statistically significant, negative relationship and even then, it is weaker at only p = 0.05. No other category has a significant relationship. This adequately demonstrates that little relationship if any exists between Chinese investment and the political preferences of target countries. Potentially the negative relationship between category 1 countries and FDI signifies the preference of Chinese investors to avoid the most democratic countries within the BRI regions. One thing worth exploring, however, is geographically how did political preferences change over time.")
                                 ),
                                 
-                                column(width = 2)
+                                column(width = 3)
                                    
                             ),
                             
                         fluidRow(
                             
-                            column(width = 2),
+                            column(width = 3),
                             
-                            column(width = 8, 
+                            column(width = 6, 
                                    
                                    tags$h1("Global Shifts in Poltical Rights"), 
                                    
@@ -414,7 +414,7 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                             ),
                             
                             
-                            column(width = 2)
+                            column(width = 3)
                             
                             
                             
@@ -422,18 +422,26 @@ ui <- fluidPage(theme = shinytheme("superhero"),
                         
                         fluidRow(
                             
-                            column(width = 6, 
+                            column(width = 2),
+                            
+                            column(width = 8, align="center", 
                                    
                                    
-                                   imageOutput(outputId = "plot15",  width = "100%", height = "100%")
+                                   imageOutput(outputId = "plot15",  width = "60%", height = "60%")
                                    
-                            ),
+                            )
+                            
+                        ),
+                        
+                        fluidRow(
+                            
+                            column(width = 2),
                             
                             
-                            column(width = 6,
+                            column(width = 8, align="center",
                                    
                                    
-                                   imageOutput(outputId = "plot16",  width = "100%", height = "100%")
+                                   imageOutput(outputId = "plot16",  width = "60%", height = "60%")
                                    
                                    
                             )
